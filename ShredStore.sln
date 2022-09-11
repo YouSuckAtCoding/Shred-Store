@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShredStore", "ShredStore\ShredStore.csproj", "{35A97EB2-6305-4058-84D5-277F5FF107C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 - Presentation", "01 - Presentation", "{0AA7697C-3B5A-40E1-BB83-8375C40BFF8D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 - Data", "04 - Data", "{FC292D44-365B-4403-A061-56646FB19D9D}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ShredDataBase", "ShredDataBase\ShredDataBase.sqlproj", "{5EBC2578-27A8-4DA4-AB1C-5BFC29311195}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35A97EB2-6305-4058-84D5-277F5FF107C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35A97EB2-6305-4058-84D5-277F5FF107C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35A97EB2-6305-4058-84D5-277F5FF107C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35A97EB2-6305-4058-84D5-277F5FF107C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EBC2578-27A8-4DA4-AB1C-5BFC29311195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EBC2578-27A8-4DA4-AB1C-5BFC29311195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EBC2578-27A8-4DA4-AB1C-5BFC29311195}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5EBC2578-27A8-4DA4-AB1C-5BFC29311195}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EBC2578-27A8-4DA4-AB1C-5BFC29311195}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EBC2578-27A8-4DA4-AB1C-5BFC29311195}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{35A97EB2-6305-4058-84D5-277F5FF107C0} = {0AA7697C-3B5A-40E1-BB83-8375C40BFF8D}
+		{5EBC2578-27A8-4DA4-AB1C-5BFC29311195} = {FC292D44-365B-4403-A061-56646FB19D9D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CACCEFD2-7D24-41DF-AAFF-D80263EB2E07}
+	EndGlobalSection
+EndGlobal
