@@ -18,6 +18,9 @@ Begin
 			Set @ResponseMessage='Incorret Password'
 		Else
 			Set @ResponseMessage='Login Successfull'
+			exec dbo.spUser_GetById @SelectedId
+			--select Name, Email, Role from dbo.[User] 
+			--where Id = @SelectedId;
 
 	End
 	Else

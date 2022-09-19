@@ -5,7 +5,7 @@ AS
 Begin
 	
 	SET NOCOUNT ON
-	SELECT * FROM dbo.[User]
+	SELECT Id, Name, Email, Role FROM dbo.[User]
 
 End
 	

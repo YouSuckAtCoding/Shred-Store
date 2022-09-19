@@ -4,7 +4,7 @@ AS
 BEGIN
 	
 	SET NOCOUNT ON
-	Select * from dbo.[User] 
+	Select Id, Name, Email, Role from dbo.[User] 
 	where Id = @Id;
 
 
