@@ -1,4 +1,5 @@
-﻿using DataLibrary.DataAccess;
+﻿using Dapper;
+using DataLibrary.DataAccess;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,28 @@ namespace DataLibrary.User
 
         public async Task<UserModel?> GetUser(int id)
         {
-            var result = await sqlDataAccess.LoadData<UserModel, dynamic>("sp.User_GetById", new { Id = id });
+            var result = await sqlDataAccess.LoadData<UserModel, dynamic>("dbo.spUser_GetById", new { Id = id} );
 
             return result.FirstOrDefault();
 
+        }
+
+        public async Task<UserModel?> Login(string Name, string Password)
+        {
+            var p = new DynamicParameters();
+            p.Add("@Name", Name);
+            p.Add("@Password", Password);
+            p.Add("@ResponseMessage","", dbType: System.Data.DbType.String, direction: System.Data.ParameterDirection.Output);
+
+            var user = await sqlDataAccess.LoadData<UserModel, dynamic>("dbo.spUser_Login", p);
+            
+            if(user.Any())
+            {
+                return user.FirstOrDefault();
+            }
+            else
+                return null;
+            
         }
 
         public Task InsertUser(UserRegisterModel user) =>
@@ -33,7 +52,7 @@ namespace DataLibrary.User
 
         public Task UpdateUser(UserModel user) => sqlDataAccess.SaveData("dbo.spUser_Update", new { user.Id, user.Name, user.Email });
 
-        public Task DeleteUser(int id) => sqlDataAccess.SaveData("dbo.User_Delete", new { Id = id });
+        public Task DeleteUser(int id) => sqlDataAccess.SaveData("dbo.spUser_Delete", new { Id = id });
 
 
     }

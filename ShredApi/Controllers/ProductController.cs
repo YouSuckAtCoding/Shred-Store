@@ -29,7 +29,7 @@ namespace ShredApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductModel>> Get(int id)
         {
-            var product = productRepository.GetProduct(id);
+            var product = await productRepository.GetProduct(id);
             return Ok(product);
         }
 

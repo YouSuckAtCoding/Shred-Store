@@ -3,7 +3,7 @@
 AS
 Begin
 
-	Select Id, Name, Price, ImageName from dbo.[Product] 
+	Select Id, Name, UserId, Price, ImageName from dbo.[Product] 
 
 
 End

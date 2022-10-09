@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 - Api", "02 - Api", "{CF74327A-5F32-4382-8620-669065D1968E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShredApi", "ShredApi\ShredApi.csproj", "{504E8748-C600-41A4-9639-E8CCEAC27F05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShredApi", "ShredApi\ShredApi.csproj", "{504E8748-C600-41A4-9639-E8CCEAC27F05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

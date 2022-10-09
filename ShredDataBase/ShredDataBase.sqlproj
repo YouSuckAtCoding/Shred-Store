@@ -73,6 +73,16 @@
     <Build Include="dbo\StoredProcedures\spProduct_Delete.sql" />
     <Build Include="dbo\StoredProcedures\spProduct_Update.sql" />
     <Build Include="dbo\StoredProcedures\spCheckUserRole.sql" />
+    <Build Include="dbo\Tables\Cart.sql" />
+    <Build Include="dbo\Tables\CartItem.sql" />
+    <Build Include="dbo\StoredProcedures\spCart_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spCart_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spCart_GetById.sql" />
+    <Build Include="dbo\StoredProcedures\spCartItem_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spCartItem_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spCartItem_GetById.sql" />
+    <Build Include="dbo\StoredProcedures\spCartItem_Update.sql" />
+    <Build Include="dbo\StoredProcedures\spCartItem_GetAll.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ShredDataBase.refactorlog" />

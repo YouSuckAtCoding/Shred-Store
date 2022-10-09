@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ShredApi.Controllers
 {
@@ -25,6 +24,17 @@ namespace ShredApi.Controllers
             var users = await userRepository.GetUsuarios();
             return Ok(users);
         }
+
+
+        // GET: api/v1/Controller/Login
+        [HttpPost("Login")]
+        public async Task<ActionResult<IEnumerable<UserModel>>> Post([FromBody] UserLoginModel user)
+        {
+
+            var users = await userRepository.Login(user.Name, user.Password);
+            return Ok(users);
+        }
+
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
