@@ -7,7 +7,6 @@ builder.Services.RegisterServices();
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -19,7 +19,7 @@ namespace DataLibrary.CartItem
 
         public Task<IEnumerable<CartItemModel>> GetCartItems(int id)
         {
-            var result = sqlDataAccess.LoadData<CartItemModel, dynamic>("dbo.spCartItem_GetAll", new { Id = id });
+            var result = sqlDataAccess.LoadData<CartItemModel, dynamic>("dbo.spCartItem_GetAll", new { CartId = id });
             return result;
         }
         public Task InsertCartItem(CartItemModel cartItem) =>
