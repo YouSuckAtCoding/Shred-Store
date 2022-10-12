@@ -2,11 +2,13 @@
 	@Name nvarchar(50),
 	@UserId int,
 	@Price money,
+	@Description nvarchar(300),
+	@Category nvarchar(50),
 	@ImageName nvarchar(50)
 AS
 Begin
 
-	Insert into dbo.[Product] (Name, UserId, Price, ImageName)
-	values (@Name, @UserId, @Price, @ImageName);
+	Insert into dbo.[Product] (Name, UserId, Price, [Description], Category, ImageName)
+	values (@Name, @UserId, @Price, @Description, @Category, @ImageName);
 
 End

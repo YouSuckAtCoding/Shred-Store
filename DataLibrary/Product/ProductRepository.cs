@@ -28,10 +28,10 @@ namespace DataLibrary.Product
         }
 
         public Task InsertProduct(ProductModel product) =>
-            sqlDataAccess.SaveData("dbo.spProduct_Insert", new { product.Name, product.Price, product.ImageName });
+            sqlDataAccess.SaveData("dbo.spProduct_Insert", new { product.Name, product.Price, product.Description, product.Category, product.ImageName });
 
         public Task UpdateProduct(ProductModel product) =>
-            sqlDataAccess.SaveData("dbo.spProduct_Update", new { product.Id, product.Name, product.Price, product.ImageName });
+            sqlDataAccess.SaveData("dbo.spProduct_Update", new { product.Id, product.Name, product.Price, product.Description, product.Category, product.ImageName });
 
         public Task DeletProduct(int id) => sqlDataAccess.SaveData("dbo.Product_Delete", new { Id = id });
     }

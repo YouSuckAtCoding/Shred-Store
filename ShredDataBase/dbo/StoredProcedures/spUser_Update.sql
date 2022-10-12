@@ -6,7 +6,7 @@ AS
 Begin
 
 	Update dbo.[User]
-	Set Name = @Name, Email = @Email
+	Set Name = IsNull(@Name, Name), Email = IsNull(@Email, Email)
 	Where Id = @Id;
 
 End

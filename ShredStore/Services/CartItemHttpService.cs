@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace ShredStore.Services
 {
-    public class CartItemHttpService
+    public class CartItemHttpService : ICartItemHttpService
     {
         private readonly HttpClient httpClient;
 

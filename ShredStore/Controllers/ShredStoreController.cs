@@ -1,14 +1,24 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ShredStore.Services;
 
 namespace ShredStore.Controllers
 {
     public class ShredStoreController : Controller
     {
-        // GET: ShredStoreController
-        public ActionResult Index()
+        private readonly IProductHttpService product;
+
+        public ShredStoreController(IProductHttpService _product)
         {
-            return View();
+            product = _product;
+        }
+        
+
+        // GET: ShredStoreController
+        public async Task<IActionResult> Index()
+        {
+            var products = await product.GetAll();
+            return View(products);
         }
 
         // GET: ShredStoreController/Details/5

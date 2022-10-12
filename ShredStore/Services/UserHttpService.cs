@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace ShredStore.Services
 {
-    public class UserHttpService
+    public class UserHttpService : IUserHttpService
     {
         private readonly HttpClient httpClient;
 
@@ -26,9 +26,9 @@ namespace ShredStore.Services
 
             var created = await JsonSerializer.DeserializeAsync<UserViewModel>(contentStream, jsonSerializerOptions);
 
-            return created;           
-            
-            
+            return created;
+
+
         }
         public async Task<UserRegistrationViewModel> Create(UserRegistrationViewModel user)
         {
