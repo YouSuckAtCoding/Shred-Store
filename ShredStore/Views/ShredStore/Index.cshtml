@@ -8,46 +8,88 @@
         <h1 class="text-light mb-5 mt-2">Guitars</h1>
         <div class="d-flex justify-content-evenly flex-wrap mb-5">
         @foreach(var item in Model){
+            if (item.Category == "Eletric Guitar")
+            {
             <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
                 <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
             <div class="card-body">
                 <h5 class="card-title text-light">@item.Name</h5>
                 <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
-                <p class="card-text text-light">Category: @item.Category</p>
+                <a href="#" class="btn btn-outline-light">Check it out!</a>
+            </div>
+            </div>
+            }
+           }
+        </div>
+
+        <h1 class="text-light mb-5 mt-2">Acoustics</h1>
+        <div class="d-flex justify-content-evenly flex-wrap mb-5">
+        @foreach(var item in Model){
+        if(item.Category == "Acoustic Guitar")
+        {
+            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title text-light">@item.Name</h5>
+                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
+                <a href="#" class="btn btn-outline-light">Check it out!</a>
+            </div>
+            </div>
+        
+        }
+        }
+        </div>
+        
+        <h1 class="text-light mb-5 mt-2">Pedals</h1>
+        <div class="d-flex justify-content-evenly flex-wrap mb-5">
+        @foreach(var item in Model){
+        if(item.Category == "Pedals")
+        {
+            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title text-light">@item.Name</h5>
+                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
                 <a href="#" class="btn btn-outline-light">Check it out!</a>
             </div>
             </div>
         }
+        }
         </div>
-        
-       @* <h1 class="text-light mb-5 mt-2">Pedals</h1>
-        <div class="d-flex justify-content-evenly flex-wrap mb-5">
-            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
-                <img src="~/Images/Jason.jpg" class="card-img-top" alt="Jason">
-            <div class="card-body">
-                <h5 class="card-title text-light">Ernie Ball Music Man Cutlass 7 Buckeye Burl</h5>
-                <p class="card-text text-light">Jason Richardson/All That Remais signiature cutlass.</p>
-                <a href="#" class="btn btn-outline-light">Check it out!</a>
-            </div>
-            </div>
-            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
-                <img src="~/Images/Loomis.png" class="card-img-top" alt="Loomis">
-            <div class="card-body">
-                <h5 class="card-title text-light">Jackson Kelly Jeff Loomis</h5>
-                <p class="card-text text-light">Jeff Loomis/Arch Enemy/Nevermore signiature Kelly.</p>
-                <a href="#" class="btn btn-outline-light">Check it out!</a>
-            </div>
-            </div>
-            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
-                <img src="~/Images/Vai.png" class="card-img-top" alt="Vai">
-            <div class="card-body">
-                <h5 class="card-title text-light">Ibanez JEM Blue Floral</h5>
-                <p class="card-text text-light">Steve Vai signitarue ibanez in floral blue.</p>
-                <a href="#" class="btn btn-outline-light">Check it out!</a>
-            </div>
 
+        <h1 class="text-light mb-5 mt-2">Amps</h1>
+        <div class="d-flex justify-content-evenly flex-wrap mb-5">
+        @foreach(var item in Model){
+        if(item.Category == "Amplifier")
+        {  
+            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title text-light">@item.Name</h5>
+                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
+                <a href="#" class="btn btn-outline-light">Check it out!</a>
             </div>
-        </div>*@
+            </div>
+        }
+        }
+        </div>
+
+        <h1 class="text-light mb-5 mt-2">Accessories</h1>
+        <div class="d-flex justify-content-evenly flex-wrap mb-5">
+        @foreach(var item in Model){
+        if(item.Category == "Accessory")
+        {   
+            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title text-light">@item.Name</h5>
+                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
+                <a href="#" class="btn btn-outline-light">Check it out!</a>
+            </div>
+            </div>
+        }
+        }
+        </div>
 
 </div>
 

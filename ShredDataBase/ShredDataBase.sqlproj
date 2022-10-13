@@ -83,6 +83,7 @@
     <Build Include="dbo\StoredProcedures\spCartItem_GetById.sql" />
     <Build Include="dbo\StoredProcedures\spCartItem_Update.sql" />
     <Build Include="dbo\StoredProcedures\spCartItem_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spProduct_GetByCategory.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ShredDataBase.refactorlog" />

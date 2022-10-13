@@ -20,6 +20,9 @@ namespace DataLibrary.Product
         public Task<IEnumerable<ProductModel>> GetProducts() =>
             sqlDataAccess.LoadData<ProductModel, dynamic>("dbo.spProduct_GetAll", new { });
 
+        public Task<IEnumerable<ProductModel>> GetProductsByCategory(string Category) =>
+            sqlDataAccess.LoadData<ProductModel, dynamic>("dbo.spProduct_GetByCategory", new { Category = Category});
+
         public async Task<ProductModel?> GetProduct(int id)
         {
             var result = await sqlDataAccess.LoadData<ProductModel, dynamic>("dbo.spProduct_GetById", new { Id = id });

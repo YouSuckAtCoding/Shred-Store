@@ -20,6 +20,17 @@ namespace ShredStore.Controllers
             var products = await product.GetAll();
             return View(products);
         }
+        public async Task<IActionResult> Category(string Category)
+        {
+            var products = await product.GetAllByCategory(Category);
+            ViewBag.Title = Category;
+            return View(products);
+        }
+
+        public async Task<IActionResult> Login()
+        {
+            return View();
+        }
 
         // GET: ShredStoreController/Details/5
         public ActionResult Details(int id)
