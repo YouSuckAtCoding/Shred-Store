@@ -15,6 +15,8 @@ namespace ShredStore.Models
         public string Email { get; set; }
         [Required]
         [DataType(DataType.Password)]
+        [StringLength(64, MinimumLength = 3,
+           ErrorMessage = "Please meet the requirement (3 - 50 characters)")]
         public string Password { get; set; }
         public string Role { get; set; }
     }

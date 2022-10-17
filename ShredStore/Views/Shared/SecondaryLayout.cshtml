@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor Accessor;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -38,8 +39,26 @@
                   
               </ul>
               <div class="d-flex">
-                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Login">Login</a>
+                        @{
+                            string loggedCheck = @Accessor.HttpContext.Session.GetString("_Name");
+                            if(loggedCheck != null || loggedCheck != string.Empty)
+                            {          
+                                if(loggedCheck != "")
+                                {
+                                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
+                                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Logout">Logout</a>    
+                                }
+                                
+                            }
+                            else
+                            {
+                                <a class="nav-link text-light" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
+                                <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Login">Login</a>         
+
+                            }
+                         }                        
               </div>
+              
             </div>
             </div>
         </nav>

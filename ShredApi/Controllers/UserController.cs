@@ -15,8 +15,7 @@ namespace ShredApi.Controllers
         {
             userRepository = _userRepository;
         }
-
-
+        
         // GET: api/<UserController>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserModel>>> Get()
@@ -26,12 +25,17 @@ namespace ShredApi.Controllers
         }
 
         // GET: api/v1/Controller/Login
-        [HttpPost("Login")]
-        public async Task<ActionResult<UserModel>> Post([FromBody] UserLoginModel user)
+        [HttpGet("Login")]
+        public async Task<ActionResult<UserModel>> Get([FromBody] UserLoginModel user)
         {
 
             var users = await userRepository.Login(user.Name, user.Password);
-            return Ok(users);
+            if(users != null)
+            {
+                return Ok(users);
+            }
+            return BadRequest();
+            
         }
 
 

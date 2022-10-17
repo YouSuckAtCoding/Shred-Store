@@ -1,0 +1,36 @@
+﻿@model UserRegistrationViewModel
+
+@{
+    Layout = "~/Views/Shared/SecondaryLayout.cshtml";
+    ViewData["Title"] = "Create Account";
+}
+
+<div class="text-center border border-dark rounded mt-5 mb-5 w-50" id="IndexMain">
+    <div class="row d-flex justify-content-center">
+                <form asp-action="CreateAccount">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group ms-2 me-2 mb-3 mt-3">
+                        <label asp-for="Name" class="control-label text-light"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group ms-2 me-2 mb-3 mt-3">
+                        <label asp-for="Email" class="control-label text-light"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group ms-2 me-2 mb-3 mt-3">
+                        <label asp-for="Password" class="control-label text-light"></label>
+                        <input type="password" asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group ms-2 me-2 mb-3 mt-3">
+                        <label asp-for="Role" class="control-label text-light"></label>
+                        <select asp-for="Role" class="form-select dropdown-toggle" asp-items="ViewBag.Roles"></select>
+                    </div>
+                    <div class="form-group mb-3 mt-3">
+                        <input type="submit" value="CreateAccount" class="btn btn-outline-light" />
+                    </div>
+                </form>
+    </div>
+</div>

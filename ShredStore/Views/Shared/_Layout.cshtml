@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor Accessor;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -38,7 +40,29 @@
                   
               </ul>
               <div class="d-flex">
-                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Login">Login</a>
+                        @{
+                            string loggedCheck = @Accessor.HttpContext.Session.GetString("_Name");
+                            if(loggedCheck != null)
+                            {   
+                                if(loggedCheck != "")
+                                {
+                                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
+                                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Logout">Logout</a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
+                                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Login">Login</a>   
+                                }
+
+                            }
+                            else
+                            {
+                                <a class="nav-link text-light" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
+                                <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Login">Login</a>   
+                                
+                            }
+                         }                        
               </div>
               
               
@@ -50,16 +74,16 @@
         <main role="main" class="pb-3">
                 <ul class="nav justify-content-center">
                   <li class="nav-item">
-                    <a class="nav-link text-light fs-3 active" aria-current="page" href="#">Guitars</a>
+                    <a class="nav-link text-light fs-3" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Eletric Guitar">Guitars</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link text-light fs-3" href="#">Amps</a>
+                    <a class="nav-link text-light fs-3" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Amplifier">Amps</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link text-light fs-3" href="#">Pedals</a>
+                    <a class="nav-link text-light fs-3" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Pedals">Pedals</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link text-light fs-3" href="#">Accessories</a>
+                    <a class="nav-link text-light fs-3" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Accessories">Accessories</a>
                   </li>
                   
                 </ul>

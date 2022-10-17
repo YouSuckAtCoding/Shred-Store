@@ -1,4 +1,5 @@
-﻿using ShredStore.Models;
+﻿
+using ShredStore.Models;
 using System.Text.Json;
 
 namespace ShredStore.Services
@@ -9,10 +10,10 @@ namespace ShredStore.Services
 
         private static readonly JsonSerializerOptions jsonSerializerOptions = new()
         {
-            IgnoreNullValues = true
+            IgnoreNullValues = true,
+            PropertyNameCaseInsensitive = true
 
         };
-
         public UserHttpService(IConfiguration config)
         {
             httpClient = new HttpClient();
@@ -20,13 +21,27 @@ namespace ShredStore.Services
         }
         public async Task<UserViewModel> Login(UserLoginViewModel user)
         {
-            var httpResponseMessage = await httpClient.PostAsJsonAsync($"api/v1/User/Login", user);
+            var json = JsonSerializer.Serialize(user);
 
-            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(httpClient.BaseAddress + "api/v1/User/Login"),
+                Content = new StringContent(json, encoding: System.Text.Encoding.UTF8, "application/json")
+            };
 
-            var created = await JsonSerializer.DeserializeAsync<UserViewModel>(contentStream, jsonSerializerOptions);
+            var response = httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
-            return created;
+            var responseInfo = response.GetAwaiter().GetResult();
+
+            var result = await responseInfo.Content.ReadAsStringAsync();
+
+            var loggeduser = JsonSerializer.Deserialize<UserViewModel>(result, jsonSerializerOptions);
+
+            return loggeduser;
+
+
+
 
 
         }
@@ -50,7 +65,7 @@ namespace ShredStore.Services
         }
         public async Task<UserViewModel> Edit(UserViewModel user)
         {
-            var httpResponseMessage = await httpClient.PutAsJsonAsync($"api/v1/UsuarioApi/{user.Id}", user);
+            var httpResponseMessage = await httpClient.PutAsJsonAsync($"api/v1/User/{user.Id}", user);
 
             var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 

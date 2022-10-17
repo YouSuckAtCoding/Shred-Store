@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ShredStore.Models;
 using ShredStore.Services;
 
 namespace ShredStore.Controllers
@@ -7,16 +8,21 @@ namespace ShredStore.Controllers
     public class ShredStoreController : Controller
     {
         private readonly IProductHttpService product;
+        private readonly IUserHttpService user;
+        public const string SessionKeyName = "_Name";
+        public const string SessionKeyId = "_Id";
 
-        public ShredStoreController(IProductHttpService _product)
+        public ShredStoreController(IProductHttpService _product, IUserHttpService _user)
         {
+
             product = _product;
-        }
-        
+            user = _user;
+        }        
 
         // GET: ShredStoreController
         public async Task<IActionResult> Index()
         {
+            
             var products = await product.GetAll();
             return View(products);
         }
@@ -30,6 +36,40 @@ namespace ShredStore.Controllers
         public async Task<IActionResult> Login()
         {
             return View();
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(UserLoginViewModel userLogin)
+        {
+            if (ModelState.IsValid)
+            {
+                var loggedUser = await user.Login(userLogin);
+                if(loggedUser != null)
+                {
+                    HttpContext.Session.SetString(SessionKeyName, loggedUser.Name);
+                    HttpContext.Session.SetInt32(SessionKeyId, loggedUser.Id);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {    
+                    return View();
+                }
+                
+            }
+            return View();
+
+        }
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.SetString(SessionKeyName, "");
+            HttpContext.Session.SetInt32(SessionKeyId, 0);
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> UserDetails(int Id)
+        {
+            var selected = await user.GetById(Id);
+            return View(selected);
         }
 
         // GET: ShredStoreController/Details/5
