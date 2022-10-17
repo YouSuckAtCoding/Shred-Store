@@ -16,11 +16,15 @@ namespace ShredStore.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateAccount()
         {
-            List<string> Role = new List<string>(); 
+            var list = GetRoles();
+            ViewBag.Roles = new SelectList(list);
+            return View();
+        }
+        public List<string> GetRoles(){
+            List<string> Role = new List<string>();
             Role.Add("Shop");
             Role.Add("Customer");
-            ViewBag.Roles = new SelectList(Role);
-            return View();
+            return Role;
         }
         [HttpPost]
         public async Task<IActionResult> CreateAccount(UserRegistrationViewModel userData)
@@ -45,5 +49,47 @@ namespace ShredStore.Controllers
             }
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> EditAccount()
+        {
+            var list = GetRoles();
+            ViewBag.Roles = new SelectList(list);
+            return View();
+        }
+        [HttpPost]
+        //public async Task<IActionResult> EditAccount(UserViewModel userEdit)
+        //{
+            
+        //}
+        [HttpGet]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAccount(UserLoginViewModel userLogin)
+        {
+            userLogin.Name = HttpContext.Session.GetString("_Name");
+            if (userLogin.Name != null && userLogin.Password != null)
+            {
+                var loggedUser = await user.Login(userLogin);
+                if (loggedUser != null)
+                {
+                    int sessionId = HttpContext.Session.GetInt32("_Id").Value;
+                    if(loggedUser.Id == sessionId)
+                    {
+                        await user.Delete(sessionId);                        
+                        return RedirectToAction("Logout", "ShredStore");
+                    }
+                    
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            return View();
+        }
+
     }
 }

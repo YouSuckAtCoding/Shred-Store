@@ -1,0 +1,24 @@
+﻿@model UserLoginViewModel
+
+@{
+    Layout = config.GetValue<string>("SecondaryLayout");
+    ViewData["Title"] = "Delete Account";
+}
+
+<div class="text-center border border-dark rounded mt-5 mb-5 w-50" id="IndexMain">
+    <h2 class="text-light">Please confirm your password.</h2>
+    <form asp-action="DeleteAccount" class="d-flex justify-content-center flex-column ms-5 me-5">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mt-3 mb-3">
+                <label asp-for="Password" class="control-label text-light"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3 mt-3">
+                <input type="submit" value="DeleteAccount" class="btn btn-outline-light" />
+            </div>
+    </form>
+    
+
+    
+</div>

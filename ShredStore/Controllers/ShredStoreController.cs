@@ -42,17 +42,26 @@ namespace ShredStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(UserLoginViewModel userLogin)
         {
-            if (ModelState.IsValid)
+            8if (ModelState.IsValid)
             {
                 var loggedUser = await user.Login(userLogin);
                 if(loggedUser != null)
                 {
-                    HttpContext.Session.SetString(SessionKeyName, loggedUser.Name);
-                    HttpContext.Session.SetInt32(SessionKeyId, loggedUser.Id);
-                    return RedirectToAction(nameof(Index));
+                    if(loggedUser.Id != 0)
+                    {
+                        HttpContext.Session.SetString(SessionKeyName, loggedUser.Name);
+                        HttpContext.Session.SetInt32(SessionKeyId, loggedUser.Id);
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        ViewBag.Message = "User does not exists!";
+                        return View();
+                    }
                 }
                 else
-                {    
+                {
+                    ViewBag.Message = "User does not exists!";
                     return View();
                 }
                 

@@ -41,7 +41,7 @@
               <div class="d-flex">
                         @{
                             string loggedCheck = @Accessor.HttpContext.Session.GetString("_Name");
-                            if(loggedCheck != null || loggedCheck != string.Empty)
+                            if(loggedCheck != null)
                             {          
                                 if(loggedCheck != "")
                                 {
