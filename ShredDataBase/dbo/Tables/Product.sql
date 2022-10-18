@@ -4,7 +4,7 @@
     [UserId] INT NOT NULL FOREIGN KEY REFERENCES [User](Id),
     [Name] NVARCHAR(50) NOT NULL, 
     [Price] MONEY NOT NULL, 
-    [Description] NVARCHAR(300) NOT NULL,
+    [Description] NVARCHAR(2000) NOT NULL,
     [Category] NVARCHAR(50) NOT NULL,
     [ImageName] NVARCHAR(50) NOT NULL
 )

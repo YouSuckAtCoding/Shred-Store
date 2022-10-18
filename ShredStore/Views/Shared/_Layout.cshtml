@@ -1,6 +1,4 @@
-﻿@inject IHttpContextAccessor Accessor;
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -46,20 +44,20 @@
                             {   
                                 if(loggedCheck != "")
                                 {
-                                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
-                                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Logout">Logout</a>
+                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
+                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="Logout">Logout</a>
                                 }
                                 else
                                 {
                                     <a class="nav-link text-light" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
-                                    <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Login">Login</a>   
+                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="Login">Login</a>   
                                 }
 
                             }
                             else
                             {
                                 <a class="nav-link text-light" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
-                                <a class="nav-link text-light" asp-controller="ShredStore" asp-action="Login">Login</a>   
+                                <a class="nav-link text-light" asp-controller="UserOperations" asp-action="Login">Login</a>   
                                 
                             }
                          }                        

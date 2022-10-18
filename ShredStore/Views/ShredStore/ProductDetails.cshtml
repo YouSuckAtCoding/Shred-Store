@@ -1,0 +1,18 @@
+﻿@model ProductViewModel
+
+@{
+    Layout = config.GetValue<string>("SecondaryLayout");
+    ViewData["Title"] = @Model.Name;
+}
+
+<div class="text-center border border-dark rounded mt-5 mb-5" id="IndexMain">
+    <h1 class="text-light mb-5 mt-5">@Model.Name</h1>
+    <div class="card mb-3 border-0">
+      <img src="~/Images/@Model.ImageName" class="card-img-top" alt="...">
+      <div class="card-body bg-secondary">
+        <p class="text-light">@Model.Description</p>
+        <p class="text-light">Price: @float.Parse(Model.Price.ToString())</p>
+        <a href="#" class="btn btn-outline-light">Add to Cart!</a>
+      </div>
+    </div>
+</div>

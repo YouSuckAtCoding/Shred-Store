@@ -8,6 +8,8 @@ namespace ShredStore.Controllers
     public class UserOperationsController : Controller
     {
         private readonly IUserHttpService user;
+        public const string SessionKeyName = "_Name";
+        public const string SessionKeyId = "_Id";
 
         public UserOperationsController(IUserHttpService _user)
         {
@@ -57,10 +59,30 @@ namespace ShredStore.Controllers
             return View();
         }
         [HttpPost]
-        //public async Task<IActionResult> EditAccount(UserViewModel userEdit)
-        //{
-            
-        //}
+        public async Task<IActionResult> EditAccount(UserViewModel userEdit)
+        {
+            if (ModelState.IsValid)
+            {
+
+                UserViewModel newUser = new UserViewModel();
+                newUser.Id = userEdit.Id;
+                newUser.Name = userEdit.Name;
+                newUser.Email = userEdit.Email;
+                if (userEdit.Role == "Shop")
+                {
+                    newUser.Role = "Vendedor";
+                }
+                else
+                {
+                    newUser.Role = "Comprador";
+                }
+                await user.Edit(newUser);
+
+                return RedirectToAction("ResetInfo", "ShredStore", newUser);
+
+            }
+            return View();
+        }
         [HttpGet]
         public async Task<IActionResult> DeleteAccount()
         {
@@ -89,6 +111,58 @@ namespace ShredStore.Controllers
                 }
             }
             return View();
+        }
+        public async Task<IActionResult> Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(UserLoginViewModel userLogin)
+        {
+            if (ModelState.IsValid)
+            {
+                var loggedUser = await user.Login(userLogin);
+                if (loggedUser != null)
+                {
+                    if (loggedUser.Id != 0)
+                    {
+                        HttpContext.Session.SetString(SessionKeyName, loggedUser.Name);
+                        HttpContext.Session.SetInt32(SessionKeyId, loggedUser.Id);
+                        return RedirectToAction(nameof(Index),"ShredStore");
+                    }
+                    else
+                    {
+                        ViewBag.Message = "User does not exists!";
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewBag.Message = "User does not exists!";
+                    return View();
+                }
+
+            }
+            return View();
+
+        }
+        public ActionResult Logout()
+        {
+            HttpContext.Session.SetString(SessionKeyName, "");
+            HttpContext.Session.SetInt32(SessionKeyId, 0);
+            return RedirectToAction(nameof(Index), "ShredStore");
+        }
+        public ActionResult ResetInfo(UserViewModel user)
+        {
+            HttpContext.Session.SetString(SessionKeyName, user.Name);
+            return (RedirectToAction(nameof(Index),"ShredStore"));
+        }
+        public async Task<IActionResult> UserDetails(int Id)
+        {
+            var selected = await user.GetById(Id);
+            return View(selected);
         }
 
     }
