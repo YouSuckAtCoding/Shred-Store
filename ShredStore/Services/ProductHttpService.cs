@@ -58,6 +58,12 @@ namespace ShredStore.Services
             return products;
 
         }
+        public async Task<IEnumerable<ProductViewModel>> GetAllByUserId(int UserId)
+        {
+            var products = await httpClient.GetFromJsonAsync<IEnumerable<ProductViewModel>>($"api/v1/Product/GetAllByUser/{UserId}");
+            return products;
+
+        }
         public async Task<ProductViewModel> GetById(int id)
         {
             var Usuario = await httpClient.GetFromJsonAsync<ProductViewModel>($"api/v1/Product/{id}");

@@ -8,6 +8,7 @@ namespace DataLibrary.Product
         Task<ProductModel?> GetProduct(int id);
         Task<IEnumerable<ProductModel>> GetProducts();
         Task<IEnumerable<ProductModel>> GetProductsByCategory(string Category);
+        Task<IEnumerable<ProductModel>> GetProductsByUserId(int userId);
         Task InsertProduct(ProductModel product);
         Task UpdateProduct(ProductModel product);
     }

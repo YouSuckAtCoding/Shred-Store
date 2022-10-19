@@ -9,6 +9,7 @@ namespace ShredStore.Services
         Task<ProductViewModel> Edit(ProductViewModel product);
         Task<IEnumerable<ProductViewModel>> GetAll();
         Task<IEnumerable<ProductViewModel>> GetAllByCategory(string Category);
+        Task<IEnumerable<ProductViewModel>> GetAllByUserId(int UserId);
         Task<ProductViewModel> GetById(int id);
     }
 }

@@ -31,6 +31,12 @@ namespace ShredApi.Controllers
             var products = await productRepository.GetProductsByCategory(Category);
             return Ok(products);
         }
+        [HttpGet("GetAllByUser/{UserId}")]
+        public async Task<ActionResult<IEnumerable<ProductModel>>> GetByUserId(int UserId)
+        {
+            var products = await productRepository.GetProductsByUserId(UserId);
+            return Ok(products);
+        }
 
         // GET api/<ProductController>/5
         [HttpGet("{id}")]

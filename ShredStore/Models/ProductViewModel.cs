@@ -1,4 +1,7 @@
-﻿namespace ShredStore.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ShredStore.Models
 {
     public class ProductViewModel
     {
@@ -9,5 +12,9 @@
         public string Description { get; set; }
         public string Category { get; set; }
         public string ImageName { get; set; }
+        [NotMapped]
+        [Display(Name = "Product Image")]
+        [Required(ErrorMessage = "Please upload an image.")]
+        public IFormFile ImageFile { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ShredStore.Models;
 using ShredStore.Services;
 
@@ -8,11 +9,12 @@ namespace ShredStore.Controllers
     public class ShredStoreController : Controller
     {
         private readonly IProductHttpService product;
-        
+        private readonly IWebHostEnvironment hostEnvironment;
 
-        public ShredStoreController(IProductHttpService _product)
+        public ShredStoreController(IProductHttpService _product, IWebHostEnvironment _hostEnvironment)
         {
             product = _product;
+            hostEnvironment = _hostEnvironment;
         }        
 
         // GET: ShredStoreController
@@ -32,28 +34,67 @@ namespace ShredStore.Controllers
             var selected = await product.GetById(Id);
             return View(selected);
         }
-
-        // GET: ShredStoreController/Create
-        public ActionResult Create()
+        public List<string> Categories()
         {
+            List<string> categories = new List<string>();
+            categories.Add("Eletric Guitar");
+            categories.Add("Pedals");
+            categories.Add("Amplifier");
+            categories.Add("Accessories");
+            categories.Add("Acoustic Guitar");
+            return categories;
+        }
+       
+        // GET: ShredStoreController/Create
+        public IActionResult PublishProduct()
+        {
+            var list = Categories();
+            ViewBag.Categories = new SelectList (list);
             return View();
         }
 
         // POST: ShredStoreController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> PublishProduct(ProductViewModel productInfo)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    ProductViewModel newProduct = new ProductViewModel();
+                    newProduct.Name = productInfo.Name;
+                    newProduct.Description = productInfo.Description;
+                    newProduct.Category = productInfo.Category;
+                    newProduct.UserId = productInfo.UserId;
+                    newProduct.Price = productInfo.Price;
+                    newProduct.ImageName = await UploadImage(productInfo.ImageFile);
+                    await product.Create(newProduct);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    return View();
+                }
+                
             }
-            catch
-            {
-                return View();
-            }
+            return View();
         }
+        public async Task<string> UploadImage(IFormFile image)
+        {
+            string rootPath = hostEnvironment.WebRootPath;
+            string fileName = Path.GetFileNameWithoutExtension(image.FileName);
+            string fileExtension = Path.GetExtension(image.FileName);
+            string ImageName = fileName + fileExtension;
+            string path = Path.Combine(rootPath + "/Images/", ImageName);
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
 
+            return ImageName;
+        }
+        
         // GET: ShredStoreController/Edit/5
         public ActionResult Edit(int id)
         {
@@ -65,6 +106,7 @@ namespace ShredStore.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
         {
+           
             try
             {
                 return RedirectToAction(nameof(Index));

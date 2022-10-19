@@ -2,8 +2,9 @@
 @{
     Layout = config.GetValue<string>("SecondaryLayout");
     ViewData["Title"] = "User Details";
+    IEnumerable<ProductViewModel> products = ViewBag.UserProducts;
 }
-
+<div class="d-flex flex-column justify-content-center">
 <div class="d-flex justify-content-evenly border border-dark rounded mt-5 mb-5" id="IndexMain">
     <div class="d-flex justify-content-center flex-column ms-5 me-5">
             <div class="mt-3 mb-3">
@@ -22,6 +23,39 @@
     <div class="d-flex justify-content-center flex-column ms-5 me-5">
         <a class="btn btn-outline-light mt-3 mb-3" asp-area="" asp-controller="UserOperations" asp-action="EditAccount">Edit User Detalis</a>
         <a class="btn btn-outline-light mt-3 mb-3" asp-area="" asp-controller="UserOperations" asp-action="DeleteAccount">Delete Account</a>
+        @if(Accessor.HttpContext.Session.GetString("_Role") == null || Accessor.HttpContext.Session.GetString("_Role") == "Comprador"){
+            
+        }
+        else{
+            <a class="btn btn-outline-light mt-3 mb-3" asp-area="" asp-controller="ShredStore" asp-action="PublishProduct">Publish Product</a>
+        }
+
+        
     </div>
-    
+</div>
+<div class="text-center border border-dark rounded mt-5 mb-5" id="YourProducts">
+    <h1 class="text-light mb-5 mt-2">Your Products</h1>
+        <div class="d-flex justify-content-evenly flex-wrap mb-5">
+            @if (!products.Any())
+            {
+                <h4 class="text-light mb-5 mt-2">You don´t any products.</h4>
+            }
+            else
+            {
+                @foreach(var item in products)
+                {
+                    <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                        <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title text-light">@item.Name</h5>
+                        <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
+                        <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
+                    </div>
+                    </div>
+                }
+                
+            }
+        
+        </div>
+</div>
 </div>

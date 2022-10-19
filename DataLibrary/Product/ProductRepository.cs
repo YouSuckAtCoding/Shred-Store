@@ -29,12 +29,18 @@ namespace DataLibrary.Product
 
             return result.FirstOrDefault();
         }
+        public async Task<IEnumerable<ProductModel>> GetProductsByUserId(int userId)
+        {
+            var result = await sqlDataAccess.LoadData<ProductModel, dynamic>("dbo.spProduct_GetByUserId", new { UserId = userId });
+
+            return result;
+        }
 
         public Task InsertProduct(ProductModel product) =>
-            sqlDataAccess.SaveData("dbo.spProduct_Insert", new { product.Name, product.Price, product.Description, product.Category, product.ImageName });
+            sqlDataAccess.SaveData("dbo.spProduct_Insert", new { product.Name, product.UserId, product.Price, product.Description, product.Category, product.ImageName });
 
         public Task UpdateProduct(ProductModel product) =>
-            sqlDataAccess.SaveData("dbo.spProduct_Update", new { product.Id, product.Name, product.Price, product.Description, product.Category, product.ImageName });
+            sqlDataAccess.SaveData("dbo.spProduct_Update", new { product.Id, product.Name, product.UserId, product.Price, product.Description, product.Category, product.ImageName });
 
         public Task DeletProduct(int id) => sqlDataAccess.SaveData("dbo.Product_Delete", new { Id = id });
     }

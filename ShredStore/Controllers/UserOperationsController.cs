@@ -8,12 +8,15 @@ namespace ShredStore.Controllers
     public class UserOperationsController : Controller
     {
         private readonly IUserHttpService user;
+        private readonly IProductHttpService product;
         public const string SessionKeyName = "_Name";
         public const string SessionKeyId = "_Id";
+        public const string SessionKeyRole = "_Role";
 
-        public UserOperationsController(IUserHttpService _user)
+        public UserOperationsController(IUserHttpService _user, IProductHttpService _product)
         {
             user = _user;
+            product = _product;
         }
         [HttpGet]
         public async Task<IActionResult> CreateAccount()
@@ -46,7 +49,7 @@ namespace ShredStore.Controllers
                     newUser.Role = "Comprador";
                 }
                 await user.Create(newUser);
-                return RedirectToAction("Login", "ShredStore");
+                return RedirectToAction(nameof(Login));
 
             }
             return View();
@@ -103,7 +106,6 @@ namespace ShredStore.Controllers
                         await user.Delete(sessionId);                        
                         return RedirectToAction("Logout", "ShredStore");
                     }
-                    
                 }
                 else
                 {
@@ -130,6 +132,7 @@ namespace ShredStore.Controllers
                     {
                         HttpContext.Session.SetString(SessionKeyName, loggedUser.Name);
                         HttpContext.Session.SetInt32(SessionKeyId, loggedUser.Id);
+                        HttpContext.Session.SetString(SessionKeyRole, loggedUser.Role);
                         return RedirectToAction(nameof(Index),"ShredStore");
                     }
                     else
@@ -152,15 +155,28 @@ namespace ShredStore.Controllers
         {
             HttpContext.Session.SetString(SessionKeyName, "");
             HttpContext.Session.SetInt32(SessionKeyId, 0);
+            HttpContext.Session.SetString(SessionKeyRole, "");
             return RedirectToAction(nameof(Index), "ShredStore");
         }
         public ActionResult ResetInfo(UserViewModel user)
         {
             HttpContext.Session.SetString(SessionKeyName, user.Name);
+            HttpContext.Session.SetString(SessionKeyRole, user.Role);
             return (RedirectToAction(nameof(Index),"ShredStore"));
+        }
+        public async Task<IEnumerable<ProductViewModel>> UserProducts()
+        {
+            var products = await product.GetAllByUserId(HttpContext.Session.GetInt32("_Id").Value);
+            if (products != null)
+            {
+                return products;
+            }
+            return Enumerable.Empty<ProductViewModel>();
         }
         public async Task<IActionResult> UserDetails(int Id)
         {
+            var userProducts = await UserProducts();
+            ViewBag.UserProducts = userProducts;
             var selected = await user.GetById(Id);
             return View(selected);
         }
