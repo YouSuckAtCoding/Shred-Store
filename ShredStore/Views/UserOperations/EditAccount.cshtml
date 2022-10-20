@@ -6,7 +6,7 @@
 }
 
 <div class="text-center border border-dark rounded mt-5 mb-5 w-50" id="IndexMain">
-    <h2 class="text-light">Edit you account</h2>
+    <h2 class="text-light">Edit your account</h2>
     <div class="row d-flex justify-content-center">
                 <form asp-action="EditAccount">
                     <input type="hidden" asp-for="Id" value=@Accessor.HttpContext.Session.GetInt32("_Id")/>

@@ -2,15 +2,15 @@
 
 @{
     Layout = config.GetValue<string>("SecondaryLayout");
-    ViewData["Title"] = "Publish Product";
+    ViewData["Title"] = "Edit " + @Model.Name;
 }
-
 
 <div class="d-flex justify-content-center flex-column">
         <h2 class="text-light">Publish Your Product \m/!</h2>
-                <form asp-action="PublishProduct" enctype="multipart/form-data">
+                <form asp-action="EditProduct" enctype="multipart/form-data">
                     <input type="hidden" asp-for="UserId" value=@Accessor.HttpContext.Session.GetInt32("_Id")/>
-                    <input type="hidden" asp-for="ImageName" value="None"/>
+                    <input type="hidden" asp-for="ImageName" value=@Model.ImageName/>
+                    <input type="hidden" asp-for="Id" value=@Model.Id/>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group ms-2 me-2 mb-3 mt-3">
                         <label asp-for="Name" class="control-label text-light"></label>

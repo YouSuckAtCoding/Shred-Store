@@ -78,7 +78,7 @@ namespace ShredApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            await productRepository.DeletProduct(id);
+            await productRepository.DeleteProduct(id);
             return Ok();
         }
     }

@@ -94,43 +94,92 @@ namespace ShredStore.Controllers
 
             return ImageName;
         }
-        
+       
+
         // GET: ShredStoreController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> EditProduct(int id)
         {
-            return View();
+            var selected = await product.GetById(id);
+            var list = Categories();
+            ViewBag.Categories = new SelectList(list);
+            return View(selected);
         }
 
         // POST: ShredStoreController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> EditProduct(ProductViewModel edited)
         {
-           
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    ProductViewModel newProduct = new ProductViewModel();
+                    newProduct.Id = edited.Id;
+                    newProduct.Name = edited.Name;
+                    newProduct.Description = edited.Description;
+                    newProduct.Category = edited.Category;
+                    newProduct.UserId = edited.UserId;
+                    newProduct.Price = edited.Price;
+                    string res = DeleteImage(edited.ImageName);
+                    newProduct.ImageName = await UploadImage(edited.ImageFile);
+                    newProduct.ImageFile = edited.ImageFile;
+                    await product.Edit(newProduct);
+                    return RedirectToAction(nameof(Index));                    
+                }
+                catch
+                {
+                    return View();
+                }
             }
-            catch
+            return View();
+        }
+        public string DeleteImage(string image)
+        {
+            string rootPath = hostEnvironment.WebRootPath;
+            string path = Path.Combine(rootPath + "/Images/", image);
+            FileInfo file = new FileInfo(path);
+            if (file.Exists)
             {
-                return View();
+                file.Delete();
+                return "Ok";
+            }
+            else
+            {
+                return "Error";
             }
         }
 
         // GET: ShredStoreController/Delete/5
-        public ActionResult Delete(int id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+            var selected = await product.GetById(id);
+            return View(selected);
         }
 
         // POST: ShredStoreController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteProduct(ProductViewModel model)
         {
+            int id = model.Id;
             try
             {
-                return RedirectToAction(nameof(Index));
+
+                var selected = await product.GetById(id);
+                string result = DeleteImage(selected.ImageName);
+                if(result == "Ok")
+                {
+                    await product.Delete(selected.Id);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ViewBag.Message = "A error occurred while deleting your product.";
+                    return View();
+                }
+                   
             }
             catch
             {

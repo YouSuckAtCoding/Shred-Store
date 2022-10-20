@@ -1,0 +1,27 @@
+﻿@model ProductViewModel
+
+@{
+    Layout = config.GetValue<string>("SecondaryLayout");
+    ViewData["Title"] = "Delete " + @Model.Name;
+}
+<div class="text-center border border-dark rounded mt-5 mb-5" id="IndexMain">
+    <form asp-action="DeleteProduct">
+   <div class="card bg-secondary bg-gradient" style="width: 18rem;">
+        <img src="~/Images/@Model.ImageName" class="card-img-top" alt="...">
+        <div class="card-body">
+             <h5 class="card-title text-light">@Model.Name</h5>
+             <p class="card-text text-light">Price: $@float.Parse(Model.Price.ToString()) </p>     
+        </div>
+        <input type="hidden" asp-for="Id" value=@Model.Id/>
+        <input type="submit" value="Delete Product" class="btn btn-outline-light" />    
+      </div>
+    </form>
+    @if(ViewBag.Message != null)
+        {
+             <script type="text/javascript">
+                window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+        </script>
+        }
+</div>

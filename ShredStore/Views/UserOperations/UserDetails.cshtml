@@ -38,7 +38,7 @@
         <div class="d-flex justify-content-evenly flex-wrap mb-5">
             @if (!products.Any())
             {
-                <h4 class="text-light mb-5 mt-2">You don´t any products.</h4>
+                <h4 class="text-light mb-5 mt-2">You don´t have any products.</h4>
             }
             else
             {
@@ -50,6 +50,8 @@
                         <h5 class="card-title text-light">@item.Name</h5>
                         <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
                         <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
+                        <a asp-controller="ShredStore" asp-action="Delete" asp-route-id=@item.Id class="btn btn-outline-light">Delete Product</a>
+                        <a asp-controller="ShredStore" asp-action="EditProduct" asp-route-id=@item.Id class="btn btn-outline-light">Edit Product</a>
                     </div>
                     </div>
                 }

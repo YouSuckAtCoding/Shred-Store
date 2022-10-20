@@ -4,7 +4,7 @@ namespace DataLibrary.Product
 {
     public interface IProductRepository
     {
-        Task DeletProduct(int id);
+        Task DeleteProduct(int id);
         Task<ProductModel?> GetProduct(int id);
         Task<IEnumerable<ProductModel>> GetProducts();
         Task<IEnumerable<ProductModel>> GetProductsByCategory(string Category);

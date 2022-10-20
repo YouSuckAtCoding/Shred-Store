@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[spProduct_Update]
 	@Id int,
 	@Name nvarchar(50),
+	@UserId int,
 	@Price money,
 	@Description nvarchar(300),
 	@Category nvarchar(50),
@@ -10,6 +11,7 @@ Begin
 
 	Update dbo.[Product]
 	Set [Name] = @Name,
+	UserId = @UserId,
 	Price = @Price,
 	[Description] = @Description,
 	Category = @Category,

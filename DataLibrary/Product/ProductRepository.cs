@@ -42,6 +42,6 @@ namespace DataLibrary.Product
         public Task UpdateProduct(ProductModel product) =>
             sqlDataAccess.SaveData("dbo.spProduct_Update", new { product.Id, product.Name, product.UserId, product.Price, product.Description, product.Category, product.ImageName });
 
-        public Task DeletProduct(int id) => sqlDataAccess.SaveData("dbo.Product_Delete", new { Id = id });
+        public Task DeleteProduct(int id) => sqlDataAccess.SaveData("dbo.spProduct_Delete", new { Id = id });
     }
 }

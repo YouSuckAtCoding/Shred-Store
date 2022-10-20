@@ -39,7 +39,7 @@ namespace ShredStore.Services
         }
         public async Task<ProductViewModel> Edit(ProductViewModel product)
         {
-            var httpResponseMessage = await httpClient.PutAsJsonAsync($"api/v1/UsuarioApi/{product.Id}", product);
+            var httpResponseMessage = await httpClient.PutAsJsonAsync($"api/v1/Product/{product.Id}", product);
 
             var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
 
