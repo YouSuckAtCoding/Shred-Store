@@ -20,7 +20,16 @@ namespace ShredApi.Controllers
         public async Task<ActionResult<CartModel>> Get(int id)
         {
             var cart = await cartRepository.GetCart(id);
-            return Ok(cart);
+            if(cart == null)
+            {
+                CartModel empty = new CartModel();
+                return empty;
+            }
+            else
+            {
+                return Ok(cart);
+            }
+            
         }
         [HttpPost]
         public async Task<ActionResult<CartModel>> Post([FromBody] CartModel cart)

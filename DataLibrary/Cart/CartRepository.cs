@@ -20,9 +20,7 @@ namespace DataLibrary.Cart
         public async Task<CartModel?> GetCart(int id)
         {
             var result = await sqlDataAccess.LoadData<CartModel, dynamic>("dbo.spCart_GetById", new { Id = id });
-
             return result.FirstOrDefault();
-
         }
 
         public Task InsertCart(CartModel cart) =>

@@ -5,6 +5,6 @@ Begin
 	
 	SET NOCOUNT ON
 	Select Id, UserId from dbo.[Cart] 
-	where Id = @Id;
+	where UserId = @Id;
 
 End

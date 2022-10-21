@@ -12,7 +12,7 @@
       <div class="card-body bg-secondary">
         <p class="text-light">@Model.Description</p>
         <p class="text-light">Price: @float.Parse(Model.Price.ToString())</p>
-        <a href="#" class="btn btn-outline-light">Add to Cart!</a>
+        <a asp-controller="CartOperations" asp-action="InsertCart" asp-route-productId="@Model.Id" class="btn btn-outline-light">Add to Cart!</a>
       </div>
     </div>
 </div>
