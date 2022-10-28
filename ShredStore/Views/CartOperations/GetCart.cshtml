@@ -1,5 +1,69 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<ProductViewModel>
+
 @{
+    Layout = config.GetValue<string>("SecondaryLayout");
+    ViewData["Title"] = "Shopping Cart";
+    var prods = ViewBag.ProductNames;
+    int GetMax(string prodName)
+    {
+        int max = 0;
+        foreach(string prod in prods)
+        {
+            if (prod.Contains(prodName))
+            {
+                string[] stringSeparators = new string[] { prodName, " ", "", "x" };
+                string[] newString = prod.Split(stringSeparators, StringSplitOptions.None);
+                max = int.Parse(newString[newString.Length - 1]);
+                return max;
+            }
+        }
+        return max;
+    }
+
 }
+
+
+<div class="d-flex justify-content-evenly rounded mt-5 mb-5" id="IndexMain">
+    <div class="d-flex justify-content-center border border-dark flex-column ms-5 me-5">
+        <div class="d-flex justify-content-evenly flex-wrap mt-5 mb-5">
+        @foreach(var item in Model)
+        {
+            <div class="card me-2 mb-2 bg-secondary bg-gradient" style="width: 18rem;">
+                    <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title text-light">@item.Name</h5>
+                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
+                <form action="RemoveCartItem">
+                <div class="mb-2">
+                    <input class="bg-secondary bg-gradient text-light rounded-pill" id="demoInput{@item.Id}" type=number min=1 max=@GetMax(item.Name) name="amount">                   
+                    <a class="btn btn-outline-light" onclick="document.getElementById('demoInput{@item.Id}').stepUp()">+</a>    
+                    <a class="btn btn-outline-light" onclick="document.getElementById('demoInput{@item.Id}').stepDown()">-</a>
+                    <input type="hidden" name="productId" value=@item.Id>
+                </div>
+                <button type="submit"  class="btn btn-outline-light">Remove From Cart</button>
+                </form>
+                
+            </div>
+            </div>
+        }
+        </div>
+    </div>
+
+    
+<div class="d-flex justify-content-center border border-dark rounded mt-5 mb-5 ms-5 me-5 w-100" id="CartTotal">
+    <div class="w-50 text-center">
+    <h1 class="text-light mb-5 mt-2">Purchase Details</h1>
+    <h4 class="text-light">Cart Products</h4>
+        @foreach(var item in prods)
+        {
+            <p class="text-light border-bottom border-white">@item.ToString()</p>
+        }
+        <p class="text-light fw-bold">Total: $@ViewBag.TotalPrice</p>
+        <a asp-controller="CartOperations" asp-action="ConfirmPurchase" class="btn btn-outline-light mt-5">Confirm Purchase</a>
+    </div>
+        
+</div>
+
+</div>
+
+    

@@ -31,9 +31,9 @@ namespace ShredStore.Services
 
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int productId, int amount, int cartId)
         {
-            var httpResponseMessage = await httpClient.DeleteAsync($"api/v1/CartItem/{id}");
+            var httpResponseMessage = await httpClient.DeleteAsync($"api/v1/CartItem/{productId}/{amount}/{cartId}");
             httpResponseMessage.EnsureSuccessStatusCode();
 
         }
@@ -46,16 +46,12 @@ namespace ShredStore.Services
             var edited = await JsonSerializer.DeserializeAsync<CartItemViewModel>(contentStream, jsonSerializerOptions);
             return edited;
         }
-        public async Task<IEnumerable<CartItemViewModel>> GetAll()
+        public async Task<IEnumerable<CartItemViewModel>> GetAll(int cartId)
         {
-            var cartItems = await httpClient.GetFromJsonAsync<IEnumerable<CartItemViewModel>>($"api/v1/CartItem");
+            var cartItems = await httpClient.GetFromJsonAsync<IEnumerable<CartItemViewModel>>($"api/v1/CartItem/{cartId}");
             return cartItems;
 
         }
-        public async Task<CartItemViewModel> GetById(int id)
-        {
-            var cartItem = await httpClient.GetFromJsonAsync<CartItemViewModel>($"api/v1/CartItem/{id}");
-            return cartItem;
-        }
+      
     }
 }

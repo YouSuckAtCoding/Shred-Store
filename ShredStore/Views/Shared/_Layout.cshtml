@@ -45,9 +45,10 @@
                             {   
                                 if(loggedCheck != "")
                                 {
+                                    <a class="nav-link text-light" asp-controller="CartOperations" asp-action="GetCart"><i class="fa-solid fa-cart-shopping"></i></a>
                                     <a class="nav-link text-light" asp-controller="UserOperations" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
                                     <a class="nav-link text-light" asp-controller="UserOperations" asp-action="Logout">Logout</a>
-                                    <a class="nav-link text-light" asp-controller="CartOpetarions" asp-action="GetCart"><i class="fa-solid fa-cart-shopping"></i></a>
+                                    
                                 }
                                 else
                                 {

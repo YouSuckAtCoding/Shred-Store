@@ -1,4 +1,5 @@
-﻿using ShredStore.Services;
+﻿using ShredStore.Models.Utility;
+using ShredStore.Services;
 
 namespace ShredStore.StartUp
 {
@@ -21,6 +22,7 @@ namespace ShredStore.StartUp
             services.AddTransient<ICartHttpService, CartHttpService>();
             services.AddTransient<ICartItemHttpService, CartItemHttpService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<ListCorrector>();
 
 
             return services;

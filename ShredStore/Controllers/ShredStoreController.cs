@@ -10,11 +10,13 @@ namespace ShredStore.Controllers
     {
         private readonly IProductHttpService product;
         private readonly IWebHostEnvironment hostEnvironment;
+        
 
         public ShredStoreController(IProductHttpService _product, IWebHostEnvironment _hostEnvironment)
         {
             product = _product;
             hostEnvironment = _hostEnvironment;
+
         }        
 
         // GET: ShredStoreController
@@ -29,6 +31,14 @@ namespace ShredStore.Controllers
             ViewBag.Title = Category;
             return View(products);
         }
+        public async Task<IActionResult> EmptyCart()
+        {
+            ViewBag.NoProds = "True";
+            ViewBag.Message = "No products in cart!";
+            var products = await product.GetAll();
+            return View("Index",products);
+        }
+      
         public async Task<IActionResult> ProductDetails(int Id)
         {
             var selected = await product.GetById(Id);

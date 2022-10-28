@@ -1,10 +1,12 @@
 ﻿CREATE PROCEDURE [dbo].[spCartItem_Delete]
-	@Id int
+	@ProductId int,
+	@Amount int,
+	@CartId int
 AS
 	
 Begin
 	
-	Delete from dbo.[CartItem] 
-	Where Id = @Id;
+	Delete Top (@Amount) from dbo.[CartItem] 
+	Where ProductId = @ProductId and CartId = @CartId;
 
 End

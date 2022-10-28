@@ -51,10 +51,10 @@ namespace ShredApi.Controllers
         }
 
         // DELETE api/<CartItemController>/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        [HttpDelete("{productId}/{amount}/{cartId}")]
+        public async Task<ActionResult> Delete(int productId, int amount, int cartId)
         {
-            await cartItemRepository.DeleteCartItem(id);
+            await cartItemRepository.DeleteCartItem(productId, amount, cartId);
             return Ok();
         }
     }

@@ -114,6 +114,11 @@ namespace ShredStore.Controllers
             }
             return View();
         }
+        public IActionResult NoAccount()
+        {
+            ViewBag.Message = "Please create an account to add to cart.";
+            return View("Login");
+        }
         public async Task<IActionResult> Login()
         {
             return View();

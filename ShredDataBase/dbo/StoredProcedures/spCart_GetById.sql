@@ -4,7 +4,7 @@ AS
 Begin
 	
 	SET NOCOUNT ON
-	Select Id, UserId from dbo.[Cart] 
+	Select Id, UserId, CreatedDate from dbo.[Cart] 
 	where UserId = @Id;
 
 End
