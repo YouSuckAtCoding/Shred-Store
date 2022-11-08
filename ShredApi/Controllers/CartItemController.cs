@@ -57,6 +57,13 @@ namespace ShredApi.Controllers
             await cartItemRepository.DeleteCartItem(productId, amount, cartId);
             return Ok();
         }
+
+        [HttpDelete("{cartId}")]
+        public async Task<ActionResult> DeleteAll(int cartId)
+        {
+            await cartItemRepository.DeleteAllCartItem(cartId);
+            return Ok();
+        }
     }
 }
 

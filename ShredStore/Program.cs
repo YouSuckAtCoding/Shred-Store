@@ -2,7 +2,7 @@ using ShredStore.StartUp;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.RegisterServices();
+builder.Services.RegisterServices(builder);
 
 var app = builder.Build();
 

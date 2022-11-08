@@ -50,8 +50,8 @@
     </div>
 
     
-<div class="d-flex justify-content-center border border-dark rounded mt-5 mb-5 ms-5 me-5 w-100" id="CartTotal">
-    <div class="w-50 text-center">
+<div class="d-flex align-items-center justify-content-center border border-dark rounded mt-5 mb-5 ms-5 me-5 w-100" id="CartTotal">
+    <div class="w-75 text-center">
     <h1 class="text-light mb-5 mt-2">Purchase Details</h1>
     <h4 class="text-light">Cart Products</h4>
         @foreach(var item in prods)
@@ -59,7 +59,7 @@
             <p class="text-light border-bottom border-white">@item.ToString()</p>
         }
         <p class="text-light fw-bold">Total: $@ViewBag.TotalPrice</p>
-        <a asp-controller="CartOperations" asp-action="ConfirmPurchase" class="btn btn-outline-light mt-5">Confirm Purchase</a>
+        <a asp-controller="CartOperations" asp-action="ConfirmPurchase" class="btn btn-outline-light mt-5 mb-5">Confirm Purchase</a>
     </div>
         
 </div>

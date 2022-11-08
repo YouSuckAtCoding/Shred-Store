@@ -4,6 +4,7 @@ namespace DataLibrary.CartItem
 {
     public interface ICartItemRepository
     {
+        Task DeleteAllCartItem(int cartId);
         Task DeleteCartItem(int productId, int amount, int cartId);
         Task<IEnumerable<CartItemModel>> GetCartItems(int id);
         Task InsertCartItem(CartItemModel cartItem);

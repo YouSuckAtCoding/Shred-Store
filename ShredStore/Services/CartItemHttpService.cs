@@ -37,6 +37,12 @@ namespace ShredStore.Services
             httpResponseMessage.EnsureSuccessStatusCode();
 
         }
+        public async Task DeleteAll(int cartId)
+        {
+            var httpResponseMessage = await httpClient.DeleteAsync($"api/v1/CartItem/{cartId}");
+            httpResponseMessage.EnsureSuccessStatusCode();
+
+        }
         public async Task<CartItemViewModel> Edit(CartItemViewModel cartItem)
         {
             var httpResponseMessage = await httpClient.PutAsJsonAsync($"api/v1/UsuarioApi/{cartItem.Id}", cartItem);

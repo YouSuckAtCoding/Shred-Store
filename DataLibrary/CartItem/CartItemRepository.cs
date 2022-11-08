@@ -27,6 +27,7 @@ namespace DataLibrary.CartItem
         public Task UpdateCartItem(CartItemModel cartItem) => sqlDataAccess.SaveData("dbo.spCartItem_Update", new { cartItem.Id, cartItem.ProductId });
 
         public Task DeleteCartItem(int productId, int amount, int cartId) => sqlDataAccess.SaveData("dbo.spCartItem_Delete", new { ProductId = productId, Amount = amount, CartId = cartId });
+        public Task DeleteAllCartItem(int cartId) => sqlDataAccess.SaveData("dbo.spCartItem_DeleteAll", new { CartId = cartId });
 
     }
 }

@@ -5,8 +5,11 @@ namespace ShredStore.StartUp
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection RegisterServices(this IServiceCollection services)
+        
+        public static IServiceCollection RegisterServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
+            ConfigurationManager configuration = builder.Configuration;
+            
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddControllersWithViews();
@@ -23,6 +26,13 @@ namespace ShredStore.StartUp
             services.AddTransient<ICartItemHttpService, CartItemHttpService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ListCorrector>();
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetConnectionString("Redis");
+                options.InstanceName = "ShredStore_";
+            });
+
+
 
 
             return services;

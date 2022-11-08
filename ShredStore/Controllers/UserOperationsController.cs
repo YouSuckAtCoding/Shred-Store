@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShredStore.Models;
+using ShredStore.Models.Utility;
 using ShredStore.Services;
 
 namespace ShredStore.Controllers
@@ -9,14 +10,16 @@ namespace ShredStore.Controllers
     {
         private readonly IUserHttpService user;
         private readonly IProductHttpService product;
+        private readonly ListCorrector listCorrector;
         public const string SessionKeyName = "_Name";
         public const string SessionKeyId = "_Id";
         public const string SessionKeyRole = "_Role";
 
-        public UserOperationsController(IUserHttpService _user, IProductHttpService _product)
+        public UserOperationsController(IUserHttpService _user, IProductHttpService _product, ListCorrector _listCorrector)
         {
             user = _user;
             product = _product;
+            listCorrector = _listCorrector;
         }
         [HttpGet]
         public async Task<IActionResult> CreateAccount()
@@ -38,7 +41,16 @@ namespace ShredStore.Controllers
             {
                 UserRegistrationViewModel newUser = new UserRegistrationViewModel();
                 newUser.Name = userData.Name;
-                newUser.Email = userData.Email;
+
+                if (listCorrector.IsEmailValid(userData.Email))
+                {
+                    newUser.Email = userData.Email;
+                }
+                else
+                {
+                    ViewBag.Message = "Invalid Email Format";
+                    return View("Login");
+                }
                 newUser.Password = userData.Password;
                 if(userData.Role == "Shop")
                 {
@@ -70,7 +82,16 @@ namespace ShredStore.Controllers
                 UserViewModel newUser = new UserViewModel();
                 newUser.Id = userEdit.Id;
                 newUser.Name = userEdit.Name;
-                newUser.Email = userEdit.Email;
+                if (listCorrector.IsEmailValid(userEdit.Email))
+                {
+                    newUser.Email = userEdit.Email;
+                }
+                else
+                {
+                    ViewBag.Message = "Invalid Email Format";
+                    return View("Login");
+                }
+                
                 if (userEdit.Role == "Shop")
                 {
                     newUser.Role = "Vendedor";
@@ -80,7 +101,6 @@ namespace ShredStore.Controllers
                     newUser.Role = "Comprador";
                 }
                 await user.Edit(newUser);
-
                 return RedirectToAction("ResetInfo", "ShredStore", newUser);
 
             }
@@ -183,6 +203,17 @@ namespace ShredStore.Controllers
             var userProducts = await UserProducts();
             ViewBag.UserProducts = userProducts;
             var selected = await user.GetById(Id);
+            switch (selected.Role)
+            {
+                case "Comprador":
+                    selected.Role = "Customer";
+                    break;
+                case "Vendedor":
+                    selected.Role = "Shop";
+                    break;
+                default:
+                    break;
+            }
             return View(selected);
         }
 

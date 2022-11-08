@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShredStore.Models;
 using ShredStore.Services;
+using ShredStore.Extensions;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace ShredStore.Controllers
 {
@@ -10,19 +12,28 @@ namespace ShredStore.Controllers
     {
         private readonly IProductHttpService product;
         private readonly IWebHostEnvironment hostEnvironment;
-        
+        private readonly IDistributedCache cache;
 
-        public ShredStoreController(IProductHttpService _product, IWebHostEnvironment _hostEnvironment)
+        public ShredStoreController(IProductHttpService _product, IWebHostEnvironment _hostEnvironment,
+            IDistributedCache _cache)
         {
             product = _product;
             hostEnvironment = _hostEnvironment;
-
+            cache = _cache;
         }        
 
         // GET: ShredStoreController
         public async Task<IActionResult> Index()
         {
-            var products = await product.GetAll();
+            string recordKey = "Products_";
+            var products = await cache.GetRecordAsync<IEnumerable<ProductViewModel>>(recordKey);
+            if(products is null)
+            {
+                var getProducts = await product.GetAll();
+                await cache.SetRecordAsync(recordKey, getProducts);
+                return View(getProducts);
+            }
+            
             return View(products);
         }
         public async Task<IActionResult> Category(string Category)
@@ -35,7 +46,15 @@ namespace ShredStore.Controllers
         {
             ViewBag.NoProds = "True";
             ViewBag.Message = "No products in cart!";
-            var products = await product.GetAll();
+            string recordKey = "Products_";
+            var products = await cache.GetRecordAsync<IEnumerable<ProductViewModel>>(recordKey);
+            if (products is null)
+            {
+                var getProducts = await product.GetAll();
+                await cache.SetRecordAsync(recordKey, getProducts);
+                return View("Index",getProducts);
+            }
+
             return View("Index",products);
         }
       

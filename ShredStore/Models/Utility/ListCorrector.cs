@@ -1,4 +1,6 @@
-﻿namespace ShredStore.Models.Utility
+﻿using System.Net.Mail;
+
+namespace ShredStore.Models.Utility
 {
     public class ListCorrector
     {
@@ -20,6 +22,23 @@
 
             return prodList.Distinct().ToList();
         }
+        
+        public bool IsEmailValid(string Email)
+        {
+            try
+            {
+                MailAddress mailAddress = new MailAddress(Email);
+
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+            
+        }
+    
+    
     }
 
    

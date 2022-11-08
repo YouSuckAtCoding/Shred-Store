@@ -30,23 +30,20 @@ namespace ShredStore.Controllers
             if (selectedCart != null)
             {
                 var cartItems = await cartItem.GetAll(selectedCart.Id);
-                if (DateTime.Now.Day - selectedCart.CreatedDate.Day > 2)
+                if (cartItems.Count() == 0)
                 {
-                    foreach(var item in cartItems)
-                    {
-                        await cartItem.Delete(item.ProductId, 99, item.CartId);
-                    }
+                    return RedirectToAction("EmptyCart", "ShredStore");
+                }
+
+                if ((selectedCart.CreatedDate.Date - DateTime.Now.Date).Days > 2)
+                {
+                    await cartItem.DeleteAll(selectedCart.Id);
                     await cart.Delete(selectedCart.Id);
                     CreateCart();
                     return RedirectToAction(nameof(GetCart));
 
                 }
-                if (cartItems.Count() == 0)
-                {
-                    
-                    return RedirectToAction("EmptyCart", "ShredStore");
-                }
-
+               
                 List<ProductViewModel> products = new List<ProductViewModel>();
                 decimal totalPrice = 0;
                 List<string> productNames = new List<string>();
@@ -69,7 +66,7 @@ namespace ShredStore.Controllers
         }
         public async void CreateCart()
         {
-            if(userId == null || userId == 0)
+            if(userId == 0)
             {
                 RedirectToAction("NoAccount", "UserOperations");
             }
@@ -81,11 +78,14 @@ namespace ShredStore.Controllers
                 await cart.Create(newCart);
 
             }
-            
-            
         }
         public async Task<IActionResult> InsertCart(int productId)
         {
+            if(userId == 0)
+            {
+                return RedirectToAction("NoAccount", "UserOperations");
+            }
+
             var shopcart = await cart.GetById(userId);
             if(shopcart.Id != 0)
             {
