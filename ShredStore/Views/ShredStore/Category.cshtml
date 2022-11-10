@@ -1,24 +1,31 @@
 ﻿@model IEnumerable<ProductViewModel>
 
 @{
-    Layout = config.GetValue<string>("SecondaryLayout");
+    Layout = config.GetValue<string>("PageLayouts:SecondaryLayout");
     ViewData["Title"] = @ViewBag.Title;
 }
 
 <div class="text-center border border-dark rounded mt-5 mb-5" id="IndexMain">
         <h1 class="text-light mb-5 mt-2">@ViewBag.Title</h1>
         <div class="d-flex justify-content-evenly flex-wrap mb-5">
-        @foreach(var item in Model)
+        @if(Model.Count() == 0)
         {
-            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
-                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title text-light">@item.Name</h5>
-                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
-                <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
-            </div>
-            </div>
+            <a class="text-light h3 text-decoration-none">No products from the selected category are available.</a>
         }
+        else{
+            @foreach(var item in Model)
+            {
+                <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                    <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-light">@item.Name</h5>
+                    <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
+                    <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
+                </div>
+                </div>
+            }
+        }
+            
         </div>
 </div>
 

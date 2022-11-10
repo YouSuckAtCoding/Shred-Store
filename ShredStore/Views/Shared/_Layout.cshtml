@@ -45,22 +45,22 @@
                             {   
                                 if(loggedCheck != "")
                                 {
-                                    <a class="nav-link text-light" asp-controller="CartOperations" asp-action="GetCart"><i class="fa-solid fa-cart-shopping"></i></a>
-                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
-                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="Logout">Logout</a>
+                                    <a class="nav-link text-light" id="hoverLink" asp-controller="CartOperations" asp-action="GetCart"><i class="fa-solid fa-cart-shopping"></i></a>
+                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
+                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Logout">Logout</a>
                                     
                                 }
                                 else
                                 {
-                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
-                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="Login">Login</a>   
+                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
+                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Login">Login</a>   
                                 }
 
                             }
                             else
                             {
-                                <a class="nav-link text-light" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
-                                <a class="nav-link text-light" asp-controller="UserOperations" asp-action="Login">Login</a>   
+                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
+                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Login">Login</a>   
                                 
                             }
                          }                        
@@ -75,19 +75,19 @@
         <main role="main" class="pb-3">
                 <ul class="nav justify-content-center">
                   <li class="nav-item">
-                    <a class="nav-link text-light fs-3" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Eletric Guitar">Guitars</a>
+                    <a class="nav-link text-light fs-3" id="hoverLink" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Eletric Guitar">Guitars</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link text-light fs-3" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Acoustic Guitar">Acoustics</a>
+                    <a class="nav-link text-light fs-3" id="hoverLink" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Acoustic Guitar">Acoustics</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link text-light fs-3" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Amplifier">Amps</a>
+                    <a class="nav-link text-light fs-3" id="hoverLink" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Amplifier">Amps</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link text-light fs-3" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Pedals">Pedals</a>
+                    <a class="nav-link text-light fs-3" id="hoverLink" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Pedals">Pedals</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link text-light fs-3" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Accessories">Accessories</a>
+                    <a class="nav-link text-light fs-3" id="hoverLink" asp-controller="ShredStore" asp-action="Category" asp-route-Category="Accessories">Accessories</a>
                   </li>
                   
                 </ul>
@@ -130,11 +130,11 @@
 
     <footer class="border-top footer text-muted bg-dark bg-gradient">
         <div class="container d-flex flex-row justify-content-center">
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">2022 ₢ Shred Store</a>
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Privacy</a>
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">About Us</a>
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Contact Us</a>
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Work With Us</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">2022 ₢ Shred Store</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Privacy</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">About Us</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Contact Us</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Work With Us</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -1,7 +1,7 @@
 ﻿@model ProductViewModel
 
 @{
-    Layout = config.GetValue<string>("SecondaryLayout");
+    Layout = config.GetValue<string>("PageLayouts:SecondaryLayout");
     ViewData["Title"] = "Delete " + @Model.Name;
 }
 <div class="text-center border border-dark rounded mt-5 mb-5" id="IndexMain">

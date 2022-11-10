@@ -11,15 +11,18 @@ namespace ShredStore.Controllers
         private readonly IUserHttpService user;
         private readonly IProductHttpService product;
         private readonly ListCorrector listCorrector;
+        private readonly EmailSender emailSender;
         public const string SessionKeyName = "_Name";
         public const string SessionKeyId = "_Id";
         public const string SessionKeyRole = "_Role";
 
-        public UserOperationsController(IUserHttpService _user, IProductHttpService _product, ListCorrector _listCorrector)
+        public UserOperationsController(IUserHttpService _user, IProductHttpService _product, ListCorrector _listCorrector,
+            EmailSender _emailSender)
         {
             user = _user;
             product = _product;
             listCorrector = _listCorrector;
+            emailSender = _emailSender;
         }
         [HttpGet]
         public async Task<IActionResult> CreateAccount()
@@ -61,6 +64,7 @@ namespace ShredStore.Controllers
                     newUser.Role = "Comprador";
                 }
                 await user.Create(newUser);
+                await emailSender.SendEmailAsync(newUser.Email, 2);
                 return RedirectToAction(nameof(Login));
 
             }
@@ -103,6 +107,23 @@ namespace ShredStore.Controllers
                 await user.Edit(newUser);
                 return RedirectToAction("ResetInfo", "ShredStore", newUser);
 
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PasswordReset()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PasswordReset(string Email)
+        {
+            if (listCorrector.IsEmailValid(Email))
+            {
+                await emailSender.SendEmailAsync(Email, 1);
+                return View();
             }
             return View();
         }

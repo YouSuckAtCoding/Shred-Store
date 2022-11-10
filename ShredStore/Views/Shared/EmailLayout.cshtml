@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ShredStore</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ShredStore.styles.css" asp-append-version="true" />
+    <script src="https://kit.fontawesome.com/208c9d7d9a.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-secondary bg-gradient">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark bg-gradient border-bottom box-shadow mb-3">
+            Shred Store
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="d-flex justify-content-center align-items-center">   
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted bg-dark bg-gradient">
+        <div class="container d-flex flex-row justify-content-center">
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">2022 ₢ Shred Store</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Privacy</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">About Us</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Contact Us</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Work With Us</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

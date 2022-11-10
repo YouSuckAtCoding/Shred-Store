@@ -1,7 +1,7 @@
 ﻿@model UserLoginViewModel
 
 @{
-    Layout = config.GetValue<string>("SecondaryLayout");
+    Layout = config.GetValue<string>("PageLayouts:SecondaryLayout");
     ViewData["Title"] = "Login";
 }
 
@@ -18,6 +18,12 @@
                 <label asp-for="Password" class="control-label text-light"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3 mt-3">
+                <a class="text-light text-decoration-none" asp-controller="UserOperations" id="hoverLink" asp-action="PasswordReset">Forgot your Password?</a>
+            </div>
+            <div class="form-group mb-3 mt-3">
+                <a class="text-light text-decoration-none" asp-controller="UserOperations" id="hoverLink" asp-action="CreateAccount">Create a Account!</a>
             </div>
             <div class="form-group mb-3 mt-3">
                 <input type="submit" value="Login" class="btn btn-outline-light" />

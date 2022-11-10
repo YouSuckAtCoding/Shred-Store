@@ -1,6 +1,6 @@
 ﻿@model UserViewModel
 @{
-    Layout = config.GetValue<string>("SecondaryLayout");
+    Layout = config.GetValue<string>("PageLayouts:SecondaryLayout");
     ViewData["Title"] = "User Details";
     IEnumerable<ProductViewModel> products = ViewBag.UserProducts;
 }

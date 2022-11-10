@@ -46,16 +46,16 @@
                             {          
                                 if(loggedCheck != "")
                                 {
-                                    <a class="nav-link text-light" asp-controller="CartOperations" asp-action="GetCart"><i class="fa-solid fa-cart-shopping"></i></a>
-                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
-                                    <a class="nav-link text-light" asp-controller="UserOperations" asp-action="Logout">Logout</a>    
+                                    <a class="nav-link text-light" id="hoverLink" asp-controller="CartOperations" asp-action="GetCart"><i class="fa-solid fa-cart-shopping"></i></a>
+                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
+                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Logout">Logout</a>    
                                 }
                                 
                             }
                             else
                             {
-                                <a class="nav-link text-light" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
-                                <a class="nav-link text-light" asp-controller="UserOperations" asp-action="Login">Login</a>         
+                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
+                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Login">Login</a>         
 
                             }
                          }                        
@@ -73,11 +73,11 @@
 
     <footer class="border-top footer text-muted bg-dark bg-gradient">
         <div class="container d-flex flex-row justify-content-center">
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">2022 ₢ Shred Store</a>
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Privacy</a>
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">About Us</a>
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Contact Us</a>
-            <a class="nav-link text-light" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Work With Us</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">2022 ₢ Shred Store</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Privacy</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">About Us</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Contact Us</a>
+            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Work With Us</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

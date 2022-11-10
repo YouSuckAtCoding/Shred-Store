@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ProductViewModel>
 
 @{
-    Layout = config.GetValue<string>("SecondaryLayout");
+    Layout = config.GetValue<string>("PageLayouts:SecondaryLayout");
     ViewData["Title"] = "Shopping Cart";
     var prods = ViewBag.ProductNames;
     int GetMax(string prodName)
