@@ -10,5 +10,7 @@ namespace DataLibrary.User
         Task<IEnumerable<UserModel>> GetUsuarios();
         Task InsertUser(UserRegisterModel user);
         Task UpdateUser(UserModel user);
+        Task<string> CheckUserEmail(string Email);
+        Task<bool> ResetUserPassword(string NewPassword, string Email);
     }
 }

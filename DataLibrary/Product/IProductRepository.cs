@@ -11,5 +11,6 @@ namespace DataLibrary.Product
         Task<IEnumerable<ProductModel>> GetProductsByUserId(int userId);
         Task InsertProduct(ProductModel product);
         Task UpdateProduct(ProductModel product);
+        
     }
 }

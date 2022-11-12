@@ -35,7 +35,7 @@ namespace ShredStore.Controllers
                     return RedirectToAction("EmptyCart", "ShredStore");
                 }
 
-                if ((selectedCart.CreatedDate.Date - DateTime.Now.Date).Days > 2)
+                if ((DateTime.Now.Date - selectedCart.CreatedDate.Date).Days > 2)
                 {
                     await cartItem.DeleteAll(selectedCart.Id);
                     await cart.Delete(selectedCart.Id);

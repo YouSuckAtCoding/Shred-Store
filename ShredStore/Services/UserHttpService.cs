@@ -1,5 +1,6 @@
 ﻿
 using ShredStore.Models;
+using System.Net;
 using System.Text.Json;
 
 namespace ShredStore.Services
@@ -40,10 +41,34 @@ namespace ShredStore.Services
 
             return loggeduser;
 
+        }
 
+        public async Task<bool> CheckEmail(string email)
+        {
+            var json = JsonSerializer.Serialize(email);
 
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(httpClient.BaseAddress + "api/v1/User/CheckEmail"),
+                Content = new StringContent(json, encoding: System.Text.Encoding.UTF8, "application/json")
+            };
 
+            var response = httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
+            var responseInfo = response.GetAwaiter().GetResult();
+
+            var result = await responseInfo.Content.ReadAsStringAsync();
+
+            if(result == "No")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }            
+            
         }
         public async Task<UserRegistrationViewModel> Create(UserRegistrationViewModel user)
         {
@@ -82,6 +107,19 @@ namespace ShredStore.Services
         {
             var Usuario = await httpClient.GetFromJsonAsync<UserViewModel>($"api/v1/User/{id}");
             return Usuario;
+        }
+
+        public async Task<bool> ResetUserPassword(UserResetPasswordViewModel user)
+        {
+            var httpResponseMessage = await httpClient.PostAsJsonAsync($"api/v1/User/PasswordReset", user);
+
+            if(httpResponseMessage.StatusCode == HttpStatusCode.OK)
+            {
+                return true;
+            }
+            return false;
+            
+
         }
     }
 }

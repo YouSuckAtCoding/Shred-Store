@@ -15,20 +15,25 @@ namespace ShredStore.Models.Utility
             this.utilityClass = utilityClass;
         }
 
-        private string EmailType(int selected)
+        private string[] EmailType(int selected)
         {
             var config = utilityClass.GetSettings();
-            
+            string[] emailInfo = new string[2];
             switch (selected)
             {
                 case 1:
-                    return config.GetValue<string>("PageLayouts:ResetPassword");
+                    emailInfo[0] = config.GetValue<string>("PageLayouts:ResetPassword");
+                    emailInfo[1] = "Password Reset";
+                    return emailInfo;
                 case 2:
-                    return config.GetValue<string>("PageLayouts:AfterRegistrationTemplate");
+                    emailInfo[0] = config.GetValue<string>("PageLayouts:AfterRegistration");
+                    emailInfo[1] = "Welcome to our shop!";
+                    return emailInfo;
                 default:
                     break;
             }
-            return "NoTemplates";
+            emailInfo[0] = "No Templates";
+            return emailInfo;
         }
         private SmtpSender GetSender()
         {
@@ -53,6 +58,39 @@ namespace ShredStore.Models.Utility
             return template;
         }
         /// <summary>
+        /// Reset Password page requires a model.Sends an email to the user. The template parameter indicates which type of email is sent.
+        /// 1 - > Password Reset ||
+        /// 2 - > After Registration ||
+        /// </summary>
+        /// <param name="emailAddress"></param>
+        /// <param name="template"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public async Task SendEmailAsync(string emailAddress, int template, UserResetPasswordViewModel user)
+        {
+            Email.DefaultSender = GetSender();
+            var projectRoot = Directory.GetCurrentDirectory();
+            Email.DefaultRenderer = new RazorRenderer(projectRoot);
+            string[] emailInfo = EmailType(template);
+            if (emailInfo[0] != "NoTemplates")
+            {
+                try
+                {
+                    var email = await Email
+                    .From("shredstore@shred.com")
+                    .To(emailAddress, emailAddress)
+                    .Subject(emailInfo[1])
+                    .UsingTemplateFromFile(emailInfo[0], user)
+                    //.Body("Thanks for buying our product.")
+                    .SendAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+        /// <summary>
         /// Sends an email to the user. The template parameter indicates which type of email is sent.
         /// 1 - > Password Reset ||
         /// 2 - > After Registration ||
@@ -65,27 +103,24 @@ namespace ShredStore.Models.Utility
         {
             Email.DefaultSender = GetSender();
             Email.DefaultRenderer = new RazorRenderer();
-            string emailTemplate = EmailType(template);
-            if (emailTemplate != "NoTemplates")
+            string[] emailInfo = EmailType(template);
+            if (emailInfo[0] != "NoTemplates")
             {
                 try
                 {
                     var email = await Email
                     .From("shredstore@shred.com")
-                    .To(emailAddress, "Customer")
-                    .Subject("Password Reset!")
-                    .UsingTemplateFromFile(emailTemplate, new { FirstName = emailAddress })
+                    .To(emailAddress, emailAddress)
+                    .Subject(emailInfo[1])
+                    .UsingTemplateFromFile(emailInfo[0], new {})
                     //.Body("Thanks for buying our product.")
                     .SendAsync();
                 }
                 catch (Exception ex)
                 {
-
                     throw;
                 }
-
             }
-            
         }
     }
 

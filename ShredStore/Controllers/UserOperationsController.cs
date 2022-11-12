@@ -12,17 +12,19 @@ namespace ShredStore.Controllers
         private readonly IProductHttpService product;
         private readonly ListCorrector listCorrector;
         private readonly EmailSender emailSender;
+        private readonly MiscellaneousUtilityClass utilityClass;
         public const string SessionKeyName = "_Name";
         public const string SessionKeyId = "_Id";
         public const string SessionKeyRole = "_Role";
 
         public UserOperationsController(IUserHttpService _user, IProductHttpService _product, ListCorrector _listCorrector,
-            EmailSender _emailSender)
+            EmailSender _emailSender, MiscellaneousUtilityClass utilityClass)
         {
             user = _user;
             product = _product;
             listCorrector = _listCorrector;
             emailSender = _emailSender;
+            this.utilityClass = utilityClass;
         }
         [HttpGet]
         public async Task<IActionResult> CreateAccount()
@@ -82,7 +84,6 @@ namespace ShredStore.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 UserViewModel newUser = new UserViewModel();
                 newUser.Id = userEdit.Id;
                 newUser.Name = userEdit.Name;
@@ -122,10 +123,82 @@ namespace ShredStore.Controllers
         {
             if (listCorrector.IsEmailValid(Email))
             {
-                await emailSender.SendEmailAsync(Email, 1);
-                return View();
+                bool res = await user.CheckEmail(Email);
+                if (res)
+                {
+                    UserResetPasswordViewModel randomUser = new UserResetPasswordViewModel();
+                    randomUser.Email = Email;
+                    randomUser.Password = utilityClass.CreateRandomPassword(10);
+                    bool ok = await user.ResetUserPassword(randomUser);
+                    if (ok)
+                    {
+                        await emailSender.SendEmailAsync(Email, 1, randomUser);
+                        return RedirectToAction("Index", "ShredStore");
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Invalid Email.";
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewBag.Message = "Invalid Email.";
+                    return View();
+                }
             }
             return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword()
+        {
+            
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(UserLoginViewModel userLogin)
+        {
+            userLogin.Name = HttpContext.Session.GetString("_Name");
+            if (userLogin.Name != null && userLogin.Password != null)
+            {
+                var loggedUser = await user.Login(userLogin);
+                if (loggedUser != null)
+                {
+                    int sessionId = HttpContext.Session.GetInt32("_Id").Value;
+                    if (loggedUser.Id == sessionId)
+                    {
+                        return RedirectToAction("NewPassword");
+                    }
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> NewPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewPassword(UserResetPasswordViewModel newPassword)
+        {
+            bool ok = await user.ResetUserPassword(newPassword);
+            if (ok)
+            {
+                return RedirectToAction("Index", "ShredStore");
+            }
+            else
+            {
+                ViewBag.Message = "Invalid Email.";
+                return View();
+            }         
+                
+            
         }
         [HttpGet]
         public async Task<IActionResult> DeleteAccount()
@@ -145,7 +218,7 @@ namespace ShredStore.Controllers
                     if(loggedUser.Id == sessionId)
                     {
                         await user.Delete(sessionId);                        
-                        return RedirectToAction("Logout", "ShredStore");
+                        return RedirectToAction(nameof(Logout));
                     }
                 }
                 else

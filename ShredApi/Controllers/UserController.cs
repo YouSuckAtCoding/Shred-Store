@@ -99,5 +99,36 @@ namespace ShredApi.Controllers
             await userRepository.DeleteUser(id);
             return Ok();
         }
+
+        [HttpGet("CheckEmail")]
+        public async Task<ActionResult> Get([FromBody]string Email)
+        {
+            var users = await userRepository.CheckUserEmail(Email);
+            if(users == "No")
+            {
+                return Ok("No");
+            }
+            return Ok(users);
+        }
+        [HttpPost("PasswordReset")]
+        public async Task<ActionResult> Post([FromBody] UserResetPasswordModel user)
+        {          
+           try
+           {
+               var res = await userRepository.ResetUserPassword(user.Password, user.Email);
+                if (res)
+                {
+                    return Ok();
+                }
+                return BadRequest();
+           }
+           catch
+           {
+               return StatusCode(409);
+           }
+            
+            
+        }
+
     }
 }

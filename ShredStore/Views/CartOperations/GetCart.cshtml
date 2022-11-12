@@ -26,9 +26,10 @@
 <div class="d-flex justify-content-evenly rounded mt-5 mb-5" id="IndexMain">
     <div class="d-flex justify-content-center border border-dark flex-column ms-5 me-5">
         <div class="d-flex justify-content-evenly flex-wrap mt-5 mb-5">
+            <a class="text-light text-decoration-none h4 fw-bold">Products on Cart</a>
         @foreach(var item in Model)
         {
-            <div class="card me-2 mb-2 bg-secondary bg-gradient" style="width: 18rem;">
+            <div class="card ms-2 me-2 mb-2 bg-secondary bg-gradient" style="width: 18rem;">
                     <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
             <div class="card-body">
                 <h5 class="card-title text-light">@item.Name</h5>
@@ -58,7 +59,7 @@
         {
             <p class="text-light border-bottom border-white">@item.ToString()</p>
         }
-        <p class="text-light fw-bold">Total: $@ViewBag.TotalPrice</p>
+        <p class="text-light fw-bold h2">Total: $@ViewBag.TotalPrice</p>
         <a asp-controller="CartOperations" asp-action="ConfirmPurchase" class="btn btn-outline-light mt-5 mb-5">Confirm Purchase</a>
     </div>
         

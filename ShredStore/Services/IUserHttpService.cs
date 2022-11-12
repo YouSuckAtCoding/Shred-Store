@@ -10,5 +10,7 @@ namespace ShredStore.Services
         Task<IEnumerable<UserViewModel>> GetAll();
         Task<UserViewModel> GetById(int id);
         Task<UserViewModel> Login(UserLoginViewModel user);
+        Task<bool> CheckEmail(string email);
+        Task<bool> ResetUserPassword(UserResetPasswordViewModel user);
     }
 }

@@ -47,6 +47,15 @@ namespace DataLibrary.User
                 return null;
             
         }
+        public async Task<string> CheckUserEmail(string Email)
+        {
+            var value = await sqlDataAccess.LoadData<string, dynamic>("dbo.spUser_CheckEmail", new { Email = Email });
+            if(value.FirstOrDefault() != null)
+            {
+                return value.FirstOrDefault();
+            }
+            return "No";
+        }
 
         public Task InsertUser(UserRegisterModel user) =>
             sqlDataAccess.SaveData("dbo.spUser_Insert", new { user.Name, user.Email, user.Password, user.Role });
@@ -54,6 +63,22 @@ namespace DataLibrary.User
         public Task UpdateUser(UserModel user) => sqlDataAccess.SaveData("dbo.spUser_Update", new { user.Id, user.Name, user.Email });
 
         public Task DeleteUser(int id) => sqlDataAccess.SaveData("dbo.spUser_Delete", new { Id = id });
+
+        public async Task<bool> ResetUserPassword(string NewPassword, string Email)
+        {
+            try
+            {
+                await sqlDataAccess.SaveData("spUser_ResetPasswordByEmail", new { Email, NewPassword });
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            
+            
+        }
 
 
     }
