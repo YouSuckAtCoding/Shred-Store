@@ -1,4 +1,5 @@
-﻿namespace ShredStore.Models.Utility
+﻿using Serilog;
+namespace ShredStore.Models.Utility
 {
     public class MiscellaneousUtilityClass
     {
@@ -24,6 +25,12 @@
                 chars[i] = _allowedChars[(int)((_allowedChars.Length) * randNum.NextDouble())];
             }
             return new string(chars);
+        }
+        public Serilog.ILogger GetLog()
+        {
+
+            Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(GetSettings()).CreateLogger();
+            return Log.Logger;
         }
     }
 }

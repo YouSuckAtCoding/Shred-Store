@@ -12,54 +12,63 @@ namespace ShredStore.Controllers
         private readonly ICartItemHttpService cartItem;
         private readonly IProductHttpService product;
         private readonly ListCorrector listCorrector;
+        private readonly MiscellaneousUtilityClass utilityClass;
         private readonly int userId;
 
         public CartOperations(ICartHttpService _cart, IProductHttpService _product, ICartItemHttpService _cartItem, IHttpContextAccessor httpContext,
-            ListCorrector _listCorrector)
+            ListCorrector _listCorrector, MiscellaneousUtilityClass utilityClass)
         {
             cart = _cart;
             product = _product;
             cartItem = _cartItem;
             userId = httpContext.HttpContext.Session.GetInt32("_Id").Value;
             listCorrector = _listCorrector;
-
+            this.utilityClass = utilityClass;
         }
         public async Task<IActionResult> GetCart()
         {  
             var selectedCart = await cart.GetById(userId);
             if (selectedCart != null)
             {
-                var cartItems = await cartItem.GetAll(selectedCart.Id);
-                if (cartItems.Count() == 0)
+                try
                 {
-                    return RedirectToAction("EmptyCart", "ShredStore");
-                }
+                    var cartItems = await cartItem.GetAll(selectedCart.Id);
+                    if (cartItems.Count() == 0)
+                    {
+                        return RedirectToAction("EmptyCart", "ShredStore");
+                    }
 
-                if ((DateTime.Now.Date - selectedCart.CreatedDate.Date).Days > 2)
+                    if ((DateTime.Now.Date - selectedCart.CreatedDate.Date).Days > 2)
+                    {
+                        await cartItem.DeleteAll(selectedCart.Id);
+                        await cart.Delete(selectedCart.Id);
+                        CreateCart();
+                        return RedirectToAction(nameof(GetCart));
+
+                    }
+
+                    List<ProductViewModel> products = new List<ProductViewModel>();
+                    decimal totalPrice = 0;
+                    List<string> productNames = new List<string>();
+
+                    foreach (var item in cartItems)
+                    {
+                        var prod = await product.GetById(item.ProductId);
+                        totalPrice = totalPrice + prod.Price;
+                        productNames.Add(prod.Name);
+                        products.Add(prod);
+
+                    }
+                    List<ProductViewModel> noDupes = products.Distinct(new ProductComparer()).ToList();
+                    ViewBag.ProductNames = listCorrector.SetProductList(productNames);
+                    ViewBag.TotalPrice = float.Parse(totalPrice.ToString());
+                    return View(noDupes);
+                }
+                catch (Exception ex)
                 {
-                    await cartItem.DeleteAll(selectedCart.Id);
-                    await cart.Delete(selectedCart.Id);
-                    CreateCart();
-                    return RedirectToAction(nameof(GetCart));
-
+                    utilityClass.GetLog().Error(ex, "Exception caught at GetCart action in CartOperationsController.");
                 }
-               
-                List<ProductViewModel> products = new List<ProductViewModel>();
-                decimal totalPrice = 0;
-                List<string> productNames = new List<string>();
-               
-                foreach (var item in cartItems)
-                {
-                    var prod = await product.GetById(item.ProductId);
-                    totalPrice = totalPrice + prod.Price;
-                    productNames.Add(prod.Name);
-                    products.Add(prod);
-
-                }
-                List<ProductViewModel> noDupes = products.Distinct(new ProductComparer()).ToList();
-                ViewBag.ProductNames = listCorrector.SetProductList(productNames);
-                ViewBag.TotalPrice = float.Parse(totalPrice.ToString());
-                return View(noDupes);
+                
             }
             return RedirectToAction("Index", "ShredStore");
 
@@ -72,10 +81,18 @@ namespace ShredStore.Controllers
             }
             else
             {
-                CartViewModel newCart = new CartViewModel();
-                newCart.UserId = userId;
-                newCart.CreatedDate = DateTime.Now;
-                await cart.Create(newCart);
+                try
+                {
+                    CartViewModel newCart = new CartViewModel();
+                    newCart.UserId = userId;
+                    newCart.CreatedDate = DateTime.Now;
+                    await cart.Create(newCart);
+                }
+                catch (Exception ex)
+                {
+                    utilityClass.GetLog().Error(ex, "Exception caught at CreateCart action in CartOperationsController.");
+                }
+                
 
             }
         }
@@ -85,19 +102,26 @@ namespace ShredStore.Controllers
             {
                 return RedirectToAction("NoAccount", "UserOperations");
             }
+            try
+            {
+                var shopcart = await cart.GetById(userId);
+                if (shopcart.Id != 0)
+                {
+                    CartItemViewModel cartItemViewModel = new CartItemViewModel();
+                    cartItemViewModel.ProductId = productId;
+                    cartItemViewModel.CartId = shopcart.Id;
+                    await cartItem.Create(cartItemViewModel);
+                }
+                else
+                {
+                    CreateCart();
+                    return RedirectToAction("InsertCart");
+                }
 
-            var shopcart = await cart.GetById(userId);
-            if(shopcart.Id != 0)
-            {
-                CartItemViewModel cartItemViewModel = new CartItemViewModel();
-                cartItemViewModel.ProductId = productId;
-                cartItemViewModel.CartId = shopcart.Id;
-                await cartItem.Create(cartItemViewModel);
             }
-            else
+            catch (Exception ex)
             {
-                CreateCart();
-                return RedirectToAction("InsertCart");
+                utilityClass.GetLog().Error(ex, "Exception caught at InsertCart action in CartOperationsController.");
             }
             
             return RedirectToAction("Index", "ShredStore");
@@ -105,8 +129,16 @@ namespace ShredStore.Controllers
         
         public async Task<IActionResult> RemoveCartItem(int productId, int amount)
         {
-            var shopcart = await cart.GetById(userId);
-            await cartItem.Delete(productId, amount, shopcart.Id);
+            try
+            {
+                var shopcart = await cart.GetById(userId);
+                await cartItem.Delete(productId, amount, shopcart.Id);
+            }
+            catch (Exception ex)
+            {
+                utilityClass.GetLog().Error(ex, "Exception caught at RemoveCartItem action in CartOperationsController.");
+            }
+            
             
             return RedirectToAction(nameof(GetCart));
         }

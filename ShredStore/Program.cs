@@ -1,8 +1,10 @@
+using Serilog;
 using ShredStore.StartUp;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.RegisterServices(builder);
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -16,6 +18,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSerilogRequestLogging();
 app.UseRouting();
 app.UseAuthorization();
 app.UseSession();

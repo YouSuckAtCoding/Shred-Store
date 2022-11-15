@@ -25,10 +25,11 @@ namespace ShredStore.StartUp
             services.AddTransient<ICartHttpService, CartHttpService>();
             services.AddTransient<ICartItemHttpService, CartItemHttpService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddTransient<ListCorrector>();
-            services.AddTransient<EmailSender>();
-            services.AddTransient<MiscellaneousUtilityClass>();
+            services.AddSingleton<ListCorrector>();
+            services.AddSingleton<EmailSender>();
+            services.AddSingleton<MiscellaneousUtilityClass>();
             
+
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = configuration.GetConnectionString("Redis");
