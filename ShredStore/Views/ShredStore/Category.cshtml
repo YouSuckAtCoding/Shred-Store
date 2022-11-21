@@ -19,6 +19,7 @@
                     <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title text-light">@item.Name</h5>
+                    <h5 class="card-title text-light">@item.Brand</h5>
                     <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
                     <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
                 </div>

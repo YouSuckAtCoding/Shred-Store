@@ -4,7 +4,7 @@
 AS
 Begin
 
-	Select Id, Name, UserId, Price, [Description], Category, ImageName from dbo.[Product]
+	Select Id, Name, UserId, Brand, Price, [Description], Category, ImageName from dbo.[Product]
 	Where Category = @Category;
 
 End

@@ -45,22 +45,22 @@
                             {   
                                 if(loggedCheck != "")
                                 {
-                                    <a class="nav-link text-light" id="hoverLink" asp-controller="CartOperations" asp-action="GetCart"><i class="fa-solid fa-cart-shopping"></i></a>
-                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
-                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Logout">Logout</a>
+                                                <a class="nav-link text-light" id="hoverLink" asp-controller="CartOperations" asp-action="GetCart"><i class="fa-solid fa-cart-shopping"></i></a>
+                                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="UserDetails" asp-route-Id=@Accessor.HttpContext.Session.GetInt32("_Id")>@loggedCheck</a>
+                                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Logout">Logout</a>
                                     
                                 }
                                 else
                                 {
-                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
-                                    <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Login">Login</a>   
+                                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
+                                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Login">Login</a>   
                                 }
 
                             }
                             else
                             {
-                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
-                                <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Login">Login</a>   
+                                            <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="CreateAccount">Create an Account</a>   
+                                            <a class="nav-link text-light" id="hoverLink" asp-controller="UserOperations" asp-action="Login">Login</a>   
                                 
                             }
                          }                        
@@ -92,9 +92,9 @@
                   
                 </ul>
                 <div class="d-flex justify-content-center mt-5 mb-5">
-                    <form class="d-flex w-50">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-light" type="submit">Search</button>
+                    <form asp-action="Index" asp-controller="ShredStore" class="d-flex w-50">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="Search">
+                    <button class="btn btn-outline-light" type="submit">Search!</button>
                   </form>
                 </div>
         <div id="HomeCarousel" class="carousel slide bg-white" data-bs-ride="carousel">
@@ -127,14 +127,12 @@
             @RenderBody()
         </main>
     </div>
-
+   
     <footer class="border-top footer text-muted bg-dark bg-gradient">
         <div class="container d-flex flex-row justify-content-center">
-            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">2022 ₢ Shred Store</a>
+            <a class="nav-link text-light" id="hoverLink">2022 ₢ Shred Store</a>
             <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Privacy</a>
-            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">About Us</a>
-            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Contact Us</a>
-            <a class="nav-link text-light" id="hoverLink" asp-area="" asp-controller="ShredStore" asp-action="Privacy">Work With Us</a>
+            <a class="nav-link text-light" id="hoverLink" asp-controller="ShredStore" asp-action="AboutUs">About Us</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

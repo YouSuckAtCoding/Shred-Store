@@ -5,19 +5,47 @@
 }
 
 <div class="text-center border border-dark rounded mt-5 mb-5" id="IndexMain">
+        @if(ViewBag.Search == "Ok")
+        {
+            <h1 class="text-light mb-5 mt-2">Search Results</h1>
+            <div class="d-flex justify-content-evenly flex-wrap mb-5">
+            @if(Model.Any())
+            {
+                @foreach(var item in Model)
+                {           
+            
+                    <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                        <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title text-light">@item.Name</h5>
+                        <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
+                        <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-Id=@item.Id class="btn btn-outline-light">Check it out!</a>
+                    </div>
+                    </div>
+            
+                }
+            }
+            else
+            {
+                <h3 class="text-light mb-5 mt-2">No Results Found</h3>
+            }                   
+            </div>
+        }
+        else{
         <h1 class="text-light mb-5 mt-2">Guitars</h1>
         <div class="d-flex justify-content-evenly flex-wrap mb-5">
         @foreach(var item in Model){
             if (item.Category == "Eletric Guitar")
             {
-            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
-                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title text-light">@item.Name</h5>
-                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
-                <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-Id=@item.Id class="btn btn-outline-light">Check it out!</a>
-            </div>
-            </div>
+                <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                    <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-light">@item.Name</h5>
+                    <p class="card-title text-light fw-bold">@item.Brand</p>
+                    <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
+                    <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-Id=@item.Id class="btn btn-outline-light">Check it out!</a>
+                </div>
+                </div>
             }
            }
         </div>
@@ -25,72 +53,76 @@
         <h1 class="text-light mb-5 mt-2">Acoustics</h1>
         <div class="d-flex justify-content-evenly flex-wrap mb-5">
         @foreach(var item in Model){
-        if(item.Category == "Acoustic Guitar")
-        {
-            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
-                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title text-light">@item.Name</h5>
-                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
-               <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
-            </div>
-            </div>
+            if(item.Category == "Acoustic Guitar")
+            {
+                <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                    <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-light">@item.Name</h5>
+                    <p class="card-title text-light fw-bold">@item.Brand</p>
+                    <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
+                   <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
+                </div>
+                </div>
         
-        }
+            }
         }
         </div>
         
         <h1 class="text-light mb-5 mt-2">Pedals</h1>
         <div class="d-flex justify-content-evenly flex-wrap mb-5">
         @foreach(var item in Model){
-        if(item.Category == "Pedals")
-        {
-            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
-                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title text-light">@item.Name</h5>
-                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
-                <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
-            </div>
-            </div>
-        }
+            if(item.Category == "Pedals")
+            {
+                <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                    <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-light">@item.Name</h5>
+                    <p class="card-title text-light fw-bold">@item.Brand</p>
+                    <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
+                    <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
+                </div>
+                </div>
+            }
         }
         </div>
 
         <h1 class="text-light mb-5 mt-2">Amps</h1>
         <div class="d-flex justify-content-evenly flex-wrap mb-5">
         @foreach(var item in Model){
-        if(item.Category == "Amplifier")
-        {  
-            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
-                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title text-light">@item.Name</h5>
-                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
-                <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
-            </div>
-            </div>
-        }
+            if(item.Category == "Amplifier")
+            {  
+                <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                    <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-light">@item.Name</h5>
+                    <p class="card-title text-light fw-bold">@item.Brand</p>
+                    <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
+                    <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
+                </div>
+                </div>
+            }
         }
         </div>
 
         <h1 class="text-light mb-5 mt-2">Accessories</h1>
         <div class="d-flex justify-content-evenly flex-wrap mb-5">
         @foreach(var item in Model){
-        if(item.Category == "Accessory")
-        {   
-            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
-                <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title text-light">@item.Name</h5>
-                <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
-                <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
-            </div>
-            </div>
-        }
+            if(item.Category == "Accessory")
+            {   
+                <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                    <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-light">@item.Name</h5>
+                    <p class="card-title text-light fw-bold">@item.Brand</p>
+                    <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString())</p>
+                    <a asp-controller="ShredStore" asp-action="ProductDetails" asp-route-id=@item.Id class="btn btn-outline-light">Check it out!</a>
+                </div>
+                </div>
+            }
         }
         </div>
-
+        }
 </div>
 
  @if(ViewBag.NoProds != null)

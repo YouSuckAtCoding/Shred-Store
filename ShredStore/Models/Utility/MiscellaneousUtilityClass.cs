@@ -3,6 +3,12 @@ namespace ShredStore.Models.Utility
 {
     public class MiscellaneousUtilityClass
     {
+        private readonly IWebHostEnvironment hostEnvironment;
+        public MiscellaneousUtilityClass(IWebHostEnvironment hostEnvironment)
+        {
+            this.hostEnvironment =  hostEnvironment;
+        }
+
         public IConfigurationRoot GetSettings()
         {
             var configuration = new ConfigurationBuilder()
@@ -32,5 +38,7 @@ namespace ShredStore.Models.Utility
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(GetSettings()).CreateLogger();
             return Log.Logger;
         }
+
+        
     }
 }

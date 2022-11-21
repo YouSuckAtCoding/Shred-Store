@@ -1,5 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[spProduct_Insert]
 	@Name nvarchar(50),
+	@Brand nvarchar(50),
 	@UserId int,
 	@Price money,
 	@Description nvarchar(300),
@@ -8,7 +9,7 @@
 AS
 Begin
 
-	Insert into dbo.[Product] (Name, UserId, Price, [Description], Category, ImageName)
-	values (@Name, @UserId, @Price, @Description, @Category, @ImageName);
+	Insert into dbo.[Product] (Name, Brand, UserId, Price, [Description], Category, ImageName)
+	values (@Name, @Brand, @UserId, @Price, @Description, @Category, @ImageName);
 
 End

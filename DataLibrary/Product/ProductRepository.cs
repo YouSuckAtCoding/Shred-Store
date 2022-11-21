@@ -37,10 +37,10 @@ namespace DataLibrary.Product
         }
 
         public Task InsertProduct(ProductModel product) =>
-            sqlDataAccess.SaveData("dbo.spProduct_Insert", new { product.Name, product.UserId, product.Price, product.Description, product.Category, product.ImageName });
+            sqlDataAccess.SaveData("dbo.spProduct_Insert", new { product.Name, product.Brand, product.UserId, product.Price, product.Description, product.Category, product.ImageName });
 
         public Task UpdateProduct(ProductModel product) =>
-            sqlDataAccess.SaveData("dbo.spProduct_Update", new { product.Id, product.Name, product.UserId, product.Price, product.Description, product.Category, product.ImageName });
+            sqlDataAccess.SaveData("dbo.spProduct_Update", new { product.Id, product.Name, product.Brand, product.UserId, product.Price, product.Description, product.Category, product.ImageName });
 
         public Task DeleteProduct(int id) => sqlDataAccess.SaveData("dbo.spProduct_Delete", new { Id = id });
     }

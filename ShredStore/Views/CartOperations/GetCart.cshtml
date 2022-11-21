@@ -33,6 +33,7 @@
                     <img src="~/Images/@item.ImageName" class="card-img-top" alt="...">
             <div class="card-body">
                 <h5 class="card-title text-light">@item.Name</h5>
+                <p class="card-text text-light">@item.Brand</p>
                 <p class="card-text text-light">Price: $@float.Parse(item.Price.ToString()) </p>
                 <form action="RemoveCartItem">
                 <div class="mb-2">

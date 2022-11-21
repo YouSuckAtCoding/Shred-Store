@@ -10,6 +10,7 @@
     <div class="card mb-3 border-0">
       <img src="~/Images/@Model.ImageName" class="card-img-top" alt="...">
       <div class="card-body bg-secondary">
+        <h5 class="card-title text-light">@Model.Brand</h5>
         <p class="text-light">@Model.Description</p>
         <p class="text-light">Price: @float.Parse(Model.Price.ToString())</p>
         <a asp-controller="CartOperations" asp-action="InsertCart" asp-route-productId="@Model.Id" class="btn btn-outline-light">Add to Cart!</a>

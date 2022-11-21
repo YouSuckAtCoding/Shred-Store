@@ -10,6 +10,7 @@
         <img src="~/Images/@Model.ImageName" class="card-img-top" alt="...">
         <div class="card-body">
              <h5 class="card-title text-light">@Model.Name</h5>
+             <h5 class="card-title text-light">@Model.Brand</h5>
              <p class="card-text text-light">Price: $@float.Parse(Model.Price.ToString()) </p>     
         </div>
         <input type="hidden" asp-for="Id" value=@Model.Id/>

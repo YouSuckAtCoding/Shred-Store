@@ -25,7 +25,7 @@ namespace ShredStore.Controllers
         }        
 
         // GET: ShredStoreController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string Search = "")
         {
             string recordKey = "Products_";
             var products = await cache.GetRecordAsync<IEnumerable<ProductViewModel>>(recordKey);
@@ -34,7 +34,17 @@ namespace ShredStore.Controllers
                 try
                 {
                     var getProducts = await product.GetAll();
-                    await cache.SetRecordAsync(recordKey, getProducts);
+                    await cache.SetRecordAsync(recordKey, getProducts, TimeSpan.FromSeconds(35));
+                    if(Search != "")
+                    {
+                        if(Search != null)
+                        {
+                            var list = getProducts.Where(p => p.Name.Contains(Search) || p.Category.Contains(Search) || p.Brand.Contains(Search))
+                            .OrderBy(p => p.Name);
+                            ViewBag.Search = "Ok";
+                            return View(list);
+                        }
+                    }
                     return View(getProducts);
                 }
                 catch (Exception ex)
@@ -42,6 +52,16 @@ namespace ShredStore.Controllers
                     utilityClass.GetLog().Error(ex, "Exception caught at Index action in ShredStoreController.");
                 }
                 
+            }
+            if (Search != "")
+            {
+                if (Search != null)
+                {
+                    var list = products.Where(p => p.Name.Contains(Search) || p.Category.Contains(Search) || p.Brand.Contains(Search))
+                    .OrderBy(p => p.Name);
+                    ViewBag.Search = "Ok";
+                    return View(list);
+                }
             }
             return View(products);
         }
@@ -54,7 +74,7 @@ namespace ShredStore.Controllers
                 try
                 {
                     var getProducts = await product.GetAllByCategory(Category);
-                    await cache.SetRecordAsync(recordKey, getProducts);
+                    await cache.SetRecordAsync(recordKey, getProducts, TimeSpan.FromSeconds(35));
                     ViewBag.Title = Category;
                     return View(getProducts);
                 }
@@ -88,8 +108,6 @@ namespace ShredStore.Controllers
                 utilityClass.GetLog().Error(ex, "Exception caught at EmptyCart action in ShredStoreController.");
             }
             return RedirectToAction(nameof(Index));
-
-
         }
       
         public async Task<IActionResult> ProductDetails(int Id)
@@ -104,8 +122,7 @@ namespace ShredStore.Controllers
                 utilityClass.GetLog().Error(ex, "Exception caught at ProductDetails action in ShredStoreController.");
                 return RedirectToAction(nameof(Index));
             }
-            
-            
+
         }
         public List<string> Categories()
         {
@@ -137,6 +154,7 @@ namespace ShredStore.Controllers
                 {
                     ProductViewModel newProduct = new ProductViewModel();
                     newProduct.Name = productInfo.Name;
+                    newProduct.Brand = productInfo.Brand;
                     newProduct.Description = productInfo.Description;
                     newProduct.Category = productInfo.Category;
                     newProduct.UserId = productInfo.UserId;
@@ -152,6 +170,7 @@ namespace ShredStore.Controllers
                 }
                 
             }
+            
             return View();
         }
         public async Task<string> UploadImage(IFormFile image)
@@ -165,7 +184,6 @@ namespace ShredStore.Controllers
             {
                 await image.CopyToAsync(fileStream);
             }
-
             return ImageName;
         }
        
@@ -184,6 +202,7 @@ namespace ShredStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProduct(ProductViewModel edited)
         {
+            ModelState.Remove("ImageFile");
             if (ModelState.IsValid)
             {
                 try
@@ -191,13 +210,18 @@ namespace ShredStore.Controllers
                     ProductViewModel newProduct = new ProductViewModel();
                     newProduct.Id = edited.Id;
                     newProduct.Name = edited.Name;
+                    newProduct.Brand = edited.Brand;
                     newProduct.Description = edited.Description;
                     newProduct.Category = edited.Category;
                     newProduct.UserId = edited.UserId;
-                    newProduct.Price = edited.Price;
-                    string res = DeleteImage(edited.ImageName);
-                    newProduct.ImageName = await UploadImage(edited.ImageFile);
-                    newProduct.ImageFile = edited.ImageFile;
+                    newProduct.Price = edited.Price; 
+                    if(edited.ImageFile != null)
+                    {
+                        string res = DeleteImage(edited.ImageName);
+                        newProduct.ImageName = await UploadImage(edited.ImageFile);
+                        newProduct.ImageFile = edited.ImageFile;
+                    }
+                    newProduct.ImageName = edited.ImageName;
                     await product.Edit(newProduct);
                     return RedirectToAction(nameof(Index));                    
                 }
@@ -207,7 +231,8 @@ namespace ShredStore.Controllers
                     return View();
                 }
             }
-            return View();
+
+            return RedirectToAction(nameof(EditProduct), edited.Id);
         }
         public string DeleteImage(string image)
         {
@@ -271,5 +296,6 @@ namespace ShredStore.Controllers
                 return View();
             }
         }
+        public async Task<IActionResult> AboutUs() => View();
     }
 }

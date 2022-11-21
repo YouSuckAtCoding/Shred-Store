@@ -1,0 +1,22 @@
+﻿
+@{
+    Layout = config.GetValue<string>("PageLayouts:SecondaryLayout");
+    ViewData["Title"] = "About Us";
+}
+
+<div class="text-center border border-dark rounded mt-5 mb-5" id="IndexMain">
+        <h1 class="text-light mb-5 mt-2 ms-3 me-3">About Us (Well, me in this case :/)</h1>
+
+        <div class="d-flex justify-content-evenly flex-wrap mb-5">
+            <div class="card me-2 bg-secondary bg-gradient" style="width: 18rem;">
+                    <img src="~/Images/Dev.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-light">Marco Antônio Ferreira (You Suck at Coding)</h5>
+                    <a class="btn btn-outline-light" href="https://github.com/YouSuckAtCoding">GitHub</a>
+                    <a class="btn btn-outline-light" href="https://www.linkedin.com/in/marco-antonio-ferreira-b11141209/">Linkedin</a>
+                    <p class="card-text text-light">Software Engineering Student, .NET Developer, Guitarist, Calisthenics/Bboy Try Hard. :)</p>
+                    <a asp-controller="ShredStore" asp-action="Index" class="btn btn-outline-light">Return to Index.</a>
+                </div>
+                </div>
+        </div>
+</div>
