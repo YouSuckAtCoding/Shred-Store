@@ -1,4 +1,6 @@
-﻿using ShredStore.Models.Utility;
+﻿using ShredStore.Factory.ConcreteFactory;
+using ShredStore.Factory.Interface;
+using ShredStore.Models.Utility;
 using ShredStore.Services;
 
 namespace ShredStore.StartUp
@@ -25,6 +27,7 @@ namespace ShredStore.StartUp
             services.AddTransient<ICartHttpService, CartHttpService>();
             services.AddTransient<ICartItemHttpService, CartItemHttpService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IProductFactory, ConcreteProductFactory>();
             services.AddSingleton<ListCorrector>();
             services.AddSingleton<EmailSender>();
             services.AddSingleton<MiscellaneousUtilityClass>();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ShredStore.Factory.Interface;
 using ShredStore.Models;
 using ShredStore.Models.Utility;
 using ShredStore.Services;
@@ -8,22 +9,24 @@ namespace ShredStore.Controllers
 {
     public class UserOperationsController : Controller
     {
-        private readonly IUserHttpService user;
-        private readonly IProductHttpService product;
-        private readonly ListCorrector listCorrector;
-        private readonly EmailSender emailSender;
-        private readonly MiscellaneousUtilityClass utilityClass;
+        private readonly IUserHttpService _user;
+        private readonly IProductHttpService _product;
+        private readonly ListCorrector _listCorrector;
+        private readonly EmailSender _emailSender;
+        private readonly MiscellaneousUtilityClass _utilityClass;
+        private readonly IUserFactory _userFactory;
         public const string SessionKeyName = "_Name";
         public const string SessionKeyId = "_Id";
         public const string SessionKeyRole = "_Role";
         public UserOperationsController(IUserHttpService _user, IProductHttpService _product, ListCorrector _listCorrector,
-            EmailSender _emailSender, MiscellaneousUtilityClass utilityClass)
+            EmailSender _emailSender, MiscellaneousUtilityClass utilityClass, IUserFactory _userFactory)
         {
-            user = _user;
-            product = _product;
-            listCorrector = _listCorrector;
-            emailSender = _emailSender;
-            this.utilityClass = utilityClass;
+            this._user = _user;
+            this._product = _product;
+            this._listCorrector = _listCorrector;
+            this._emailSender = _emailSender;
+            this._utilityClass = utilityClass;
+            this._userFactory = _userFactory;
             
         }
         [HttpGet]
@@ -44,44 +47,27 @@ namespace ShredStore.Controllers
         {
             if (ModelState.IsValid)
             {
+                var newUser = _userFactory.CreateUser(userData);
                 try
                 {
-                    UserRegistrationViewModel newUser = new UserRegistrationViewModel();
-                    newUser.Name = userData.Name;
-
-                    if (listCorrector.IsEmailValid(userData.Email))
+                    if(newUser.Id == 0)
                     {
-                        newUser.Email = userData.Email;
+                        ViewBag.Message = "Invalid Login";
+                        return View();
                     }
-                    else
-                    {
-                        ViewBag.Message = "Invalid Email Format";
-                        return View("Login");
-                    }
-                    newUser.Password = userData.Password;
-                    if (userData.Role == "Shop")
-                    {
-                        newUser.Role = "Vendedor";
-                    }
-                    else
-                    {
-                        newUser.Role = "Comprador";
-                    }
-                    await user.Create(newUser);
-                    await emailSender.SendEmailAsync(newUser.Email, 2);
+                    await _user.Create(newUser);
+                    await _emailSender.SendEmailAsync(newUser.Email, 2);
                     return RedirectToAction(nameof(Login));
+
+
                 }
                 catch (Exception ex)
                 {
                     ViewBag.Message = "An error occurred while registering.";
-                    utilityClass.GetLog().Error(ex, "Exception caught at CreateAccount action in UserOperationsController.");
+                    _utilityClass.GetLog().Error(ex, "Exception caught at CreateAccount action in UserOperationsController.");
                     return View();
                   
                 }
-                
-                
-                
-
             }
             return View();
         }
@@ -97,41 +83,24 @@ namespace ShredStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserViewModel newUser = new UserViewModel();
-                newUser.Id = userEdit.Id;
-                newUser.Name = userEdit.Name;
-                if (listCorrector.IsEmailValid(userEdit.Email))
-                {
-                    newUser.Email = userEdit.Email;
-                }
-                else
-                {
-                    ViewBag.Message = "Invalid Email Format";
-                    return View("Login");
-                }
-                
-                if (userEdit.Role == "Shop")
-                {
-                    newUser.Role = "Vendedor";
-                }
-                else
-                {
-                    newUser.Role = "Comprador";
-                }
+                var editedUser = _userFactory.CreateUser(userEdit);
                 try
                 {
-                    await user.Edit(newUser);
-                    return RedirectToAction("ResetInfo", "ShredStore", newUser);
+                    if(editedUser.Id <= 0)
+                    {
+                        ViewBag.Message = "Something went wrong.";
+                        return View();
+                    }
+                    await _user.Edit(editedUser);
+                    return RedirectToAction("ResetInfo", "ShredStore", editedUser);
                 }
                 catch (Exception ex)
                 {
                     ViewBag.Message = "An error has occurred.";
-                    utilityClass.GetLog().Error(ex, "Exception caught at EditAccount action in UserOperationsController.");
+                    _utilityClass.GetLog().Error(ex, "Exception caught at EditAccount action in UserOperationsController.");
                     return View();
                     
-                }
-                
-
+                } 
             }
             return View();
         }
@@ -145,32 +114,28 @@ namespace ShredStore.Controllers
         [HttpPost]
         public async Task<IActionResult> PasswordReset(string Email)
         {
-            if (listCorrector.IsEmailValid(Email))
+            if (_listCorrector.IsEmailValid(Email))
             {
-                bool res = await user.CheckEmail(Email);
+                bool res = await _user.CheckEmail(Email);
                 if (res)
                 {
                     try
                     {
-                        UserResetPasswordViewModel randomUser = new UserResetPasswordViewModel();
-                        randomUser.Email = Email;
-                        randomUser.Password = utilityClass.CreateRandomPassword(10);
-                        bool ok = await user.ResetUserPassword(randomUser);
-                        if (ok)
-                        {
-                            await emailSender.SendEmailAsync(Email, 1, randomUser);
-                            return RedirectToAction("Index", "ShredStore");
-                        }
-                        else
+                        var randomUser = _userFactory.CreateUser(Email);
+                        bool ok = await _user.ResetUserPassword(randomUser);
+                        if (!ok)
                         {
                             ViewBag.Message = "Invalid Email.";
                             return View();
+                            
                         }
+                        await _emailSender.SendEmailAsync(Email, 1, randomUser);
+                        return RedirectToAction("Index", "ShredStore");
                     }
                     catch (Exception ex)
                     {
                         ViewBag.Message = "An error has occurred.";
-                        utilityClass.GetLog().Error(ex, "Exception caught at PasswordReset action in UserOperationsController.");
+                        _utilityClass.GetLog().Error(ex, "Exception caught at PasswordReset action in UserOperationsController.");
                         return View();
                         throw;
                     }
@@ -187,7 +152,6 @@ namespace ShredStore.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangePassword()
         {
-            
             return View();
         }
 
@@ -199,7 +163,7 @@ namespace ShredStore.Controllers
             {
                 try
                 {
-                    var loggedUser = await user.Login(userLogin);
+                    var loggedUser = await _user.Login(userLogin);
                     if (loggedUser != null)
                     {
                         int sessionId = HttpContext.Session.GetInt32("_Id").Value;
@@ -216,7 +180,7 @@ namespace ShredStore.Controllers
                 catch (Exception ex)
                 {
                     ViewBag.Message = "An error has occurred.";
-                    utilityClass.GetLog().Error(ex, "Exception caught at ChangePassword action in UserOperationsController.");
+                    _utilityClass.GetLog().Error(ex, "Exception caught at ChangePassword action in UserOperationsController.");
                     return View();
                     throw;
                 }
@@ -234,7 +198,7 @@ namespace ShredStore.Controllers
         {
             try
             {
-                bool ok = await user.ResetUserPassword(newPassword);
+                bool ok = await _user.ResetUserPassword(newPassword);
                 if (ok)
                 {
                     return RedirectToAction("Index", "ShredStore");
@@ -248,7 +212,7 @@ namespace ShredStore.Controllers
             catch (Exception ex)
             {
                 ViewBag.Message = "An error has occurred.";
-                utilityClass.GetLog().Error(ex, "Exception caught at NewPassword action in UserOperationsController.");
+                _utilityClass.GetLog().Error(ex, "Exception caught at NewPassword action in UserOperationsController.");
                 return View();
             }
             
@@ -269,13 +233,13 @@ namespace ShredStore.Controllers
             {
                 if (userLogin.Name != null && userLogin.Password != null)
                 {
-                    var loggedUser = await user.Login(userLogin);
+                    var loggedUser = await _user.Login(userLogin);
                     if (loggedUser != null)
                     {
                         int sessionId = HttpContext.Session.GetInt32("_Id").Value;
                         if (loggedUser.Id == sessionId)
                         {
-                            await user.Delete(sessionId);
+                            await _user.Delete(sessionId);
                             return RedirectToAction(nameof(Logout));
                         }
                     }
@@ -289,7 +253,7 @@ namespace ShredStore.Controllers
             {
 
                 ViewBag.Message = "An error has occurred.";
-                utilityClass.GetLog().Error(ex, "Exception caught at DeleteAccount action in UserOperationsController.");
+                _utilityClass.GetLog().Error(ex, "Exception caught at DeleteAccount action in UserOperationsController.");
                 return View();
             }
 
@@ -313,7 +277,7 @@ namespace ShredStore.Controllers
             {
                 try
                 {
-                    var loggedUser = await user.Login(userLogin);
+                    var loggedUser = await _user.Login(userLogin);
                     if (loggedUser != null)
                     {
                         if (loggedUser.Id != 0)
@@ -338,7 +302,7 @@ namespace ShredStore.Controllers
                 catch (Exception ex)
                 {
                     ViewBag.Message = "An error has occurred.";
-                    utilityClass.GetLog().Error(ex, "Exception caught at Login action in UserOperationsController.");
+                    _utilityClass.GetLog().Error(ex, "Exception caught at Login action in UserOperationsController.");
                     return View();
                 }
                 
@@ -363,7 +327,7 @@ namespace ShredStore.Controllers
         }
         public async Task<IEnumerable<ProductViewModel>> UserProducts()
         {
-            var products = await product.GetAllByUserId(HttpContext.Session.GetInt32("_Id").Value);
+            var products = await _product.GetAllByUserId(HttpContext.Session.GetInt32("_Id").Value);
             if (products != null)
             {
                 return products;
@@ -374,7 +338,7 @@ namespace ShredStore.Controllers
         {
             var userProducts = await UserProducts();
             ViewBag.UserProducts = userProducts;
-            var selected = await user.GetById(Id);
+            var selected = await _user.GetById(Id);
             switch (selected.Role)
             {
                 case "Comprador":

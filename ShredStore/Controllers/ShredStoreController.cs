@@ -6,85 +6,96 @@ using ShredStore.Services;
 using ShredStore.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using ShredStore.Models.Utility;
+using ShredStore.Factory.Interface;
 
 namespace ShredStore.Controllers
 {
     public class ShredStoreController : Controller
     {
-        private readonly IProductHttpService product;
-        private readonly IWebHostEnvironment hostEnvironment;
-        private readonly IDistributedCache cache;
-        private readonly MiscellaneousUtilityClass utilityClass;
-        public ShredStoreController(IProductHttpService _product, IWebHostEnvironment _hostEnvironment,
-            IDistributedCache _cache, MiscellaneousUtilityClass utilityClass)
+        private readonly IProductHttpService _product;
+        private readonly IDistributedCache _cache;
+        private readonly MiscellaneousUtilityClass _utilityClass;
+        private readonly IProductFactory _productFactory;
+        public ShredStoreController(IProductHttpService _product, 
+            IDistributedCache _cache, MiscellaneousUtilityClass _utilityClass, IProductFactory _productFactory)
         {
-            product = _product;
-            hostEnvironment = _hostEnvironment;
-            cache = _cache;
-            this.utilityClass = utilityClass;
-        }        
-
+            this._product = _product;
+            this._cache = _cache;
+            this._utilityClass = _utilityClass;
+            this._productFactory = _productFactory;
+        }
+        public async Task<IEnumerable<ProductViewModel>> GetAllProducts(string recordKey)
+        {
+            var products = await _cache.GetRecordAsync<IEnumerable<ProductViewModel>>(recordKey);
+            if (products is null)
+            {
+                var getProducts = await _product.GetAll();
+                SetOnCache(recordKey, getProducts);
+                return getProducts;
+            }
+            return products;
+        }
+        public async Task<IEnumerable<ProductViewModel>> GetCategoryProducts(string recordKey, string category)
+        {
+            var products = await _cache.GetRecordAsync<IEnumerable<ProductViewModel>>(recordKey);
+            if (products is null)
+            {
+                var getProducts = await _product.GetAllByCategory(category);
+                SetOnCache(recordKey, getProducts);
+                return getProducts;
+            }
+            return products;
+        }
+        public IEnumerable<ProductViewModel> SearchResults(string search, IEnumerable<ProductViewModel> products)
+        {
+            var searchResults = products.Where(p => p.Name.Contains(search) || p.Category.Contains(search) || p.Brand.Contains(search))
+                         .OrderBy(p => p.Name);
+            return searchResults;
+        }
+        public async void SetOnCache(string recordKey, IEnumerable<ProductViewModel> products)
+        {
+            await _cache.SetRecordAsync(recordKey, products, TimeSpan.FromSeconds(35));
+        }
+        
+        
         // GET: ShredStoreController
         public async Task<IActionResult> Index(string Search = "")
         {
             string recordKey = "Products_";
-            var products = await cache.GetRecordAsync<IEnumerable<ProductViewModel>>(recordKey);
-            if(products is null)
+            var allProducts = await GetAllProducts(recordKey);
+            try
             {
-                try
+                if (Search == "" || Search is null)
                 {
-                    var getProducts = await product.GetAll();
-                    await cache.SetRecordAsync(recordKey, getProducts, TimeSpan.FromSeconds(35));
-                    if(Search != "")
-                    {
-                        if(Search != null)
-                        {
-                            var list = getProducts.Where(p => p.Name.Contains(Search) || p.Category.Contains(Search) || p.Brand.Contains(Search))
-                            .OrderBy(p => p.Name);
-                            ViewBag.Search = "Ok";
-                            return View(list);
-                        }
-                    }
-                    return View(getProducts);
+                    return View(allProducts);
                 }
-                catch (Exception ex)
+                else
                 {
-                    utilityClass.GetLog().Error(ex, "Exception caught at Index action in ShredStoreController.");
-                }
-                
-            }
-            if (Search != "")
-            {
-                if (Search != null)
-                {
-                    var list = products.Where(p => p.Name.Contains(Search) || p.Category.Contains(Search) || p.Brand.Contains(Search))
-                    .OrderBy(p => p.Name);
+                    var list = SearchResults(Search, allProducts);
                     ViewBag.Search = "Ok";
                     return View(list);
                 }
             }
-            return View(products);
+            catch (Exception ex)
+            {
+                _utilityClass.GetLog().Error(ex, "Exception caught at Index action in ShredStoreController.");
+            }
+            return View();
         }
         public async Task<IActionResult> Category(string Category)
         {
             string recordKey = $"{Category}_";
-            var products = await cache.GetRecordAsync<IEnumerable<ProductViewModel>>(recordKey);
-            if(products == null)
+            var products = await GetCategoryProducts(recordKey, Category);
+            try
             {
-                try
-                {
-                    var getProducts = await product.GetAllByCategory(Category);
-                    await cache.SetRecordAsync(recordKey, getProducts, TimeSpan.FromSeconds(35));
-                    ViewBag.Title = Category;
-                    return View(getProducts);
-                }
-                catch (Exception ex)
-                {
-                    utilityClass.GetLog().Error(ex, "Exception caught at Category action in ShredStoreController.");
-                }
-                
+                ViewBag.Title = Category;
+                return View(products);
             }
-            return View(products);
+            catch (Exception ex)
+            {
+                _utilityClass.GetLog().Error(ex, "Exception caught at Category action in ShredStoreController.");
+            } 
+            return View();
 
         }
         public async Task<IActionResult> EmptyCart()
@@ -94,18 +105,12 @@ namespace ShredStore.Controllers
             string recordKey = "Products_";
             try
             {
-                var products = await cache.GetRecordAsync<IEnumerable<ProductViewModel>>(recordKey);
-                if (products is null)
-                {
-                    var getProducts = await product.GetAll();
-                    await cache.SetRecordAsync(recordKey, getProducts);
-                    return View("Index", getProducts);
-                }
+                var products = await GetAllProducts(recordKey);                
                 return View("Index", products);
             }
             catch (Exception ex)
             {
-                utilityClass.GetLog().Error(ex, "Exception caught at EmptyCart action in ShredStoreController.");
+                _utilityClass.GetLog().Error(ex, "Exception caught at EmptyCart action in ShredStoreController.");
             }
             return RedirectToAction(nameof(Index));
         }
@@ -114,12 +119,12 @@ namespace ShredStore.Controllers
         {
             try
             {
-                var selected = await product.GetById(Id);
+                var selected = await _product.GetById(Id);
                 return View(selected);
             }
             catch (Exception ex)
             {
-                utilityClass.GetLog().Error(ex, "Exception caught at ProductDetails action in ShredStoreController.");
+                _utilityClass.GetLog().Error(ex, "Exception caught at ProductDetails action in ShredStoreController.");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -152,20 +157,13 @@ namespace ShredStore.Controllers
             {
                 try
                 {
-                    ProductViewModel newProduct = new ProductViewModel();
-                    newProduct.Name = productInfo.Name;
-                    newProduct.Brand = productInfo.Brand;
-                    newProduct.Description = productInfo.Description;
-                    newProduct.Category = productInfo.Category;
-                    newProduct.UserId = productInfo.UserId;
-                    newProduct.Price = productInfo.Price;
-                    newProduct.ImageName = await UploadImage(productInfo.ImageFile);
-                    await product.Create(newProduct);
+                    ProductViewModel newProduct = await _productFactory.createProduct(productInfo);                    
+                    await _product.Create(newProduct);
                     return RedirectToAction(nameof(Index));
                 }
                 catch(Exception ex)
                 {
-                    utilityClass.GetLog().Error(ex, "Exception caught at PublishProduct action in ShredStoreController.");
+                    _utilityClass.GetLog().Error(ex, "Exception caught at PublishProduct action in ShredStoreController.");
                     return View();
                 }
                 
@@ -173,25 +171,10 @@ namespace ShredStore.Controllers
             
             return View();
         }
-        public async Task<string> UploadImage(IFormFile image)
-        {
-            string rootPath = hostEnvironment.WebRootPath;
-            string fileName = Path.GetFileNameWithoutExtension(image.FileName);
-            string fileExtension = Path.GetExtension(image.FileName);
-            string ImageName = fileName + fileExtension;
-            string path = Path.Combine(rootPath + "/Images/", ImageName);
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            {
-                await image.CopyToAsync(fileStream);
-            }
-            return ImageName;
-        }
-       
-
         // GET: ShredStoreController/Edit/5
         public async Task<IActionResult> EditProduct(int id)
         {
-            var selected = await product.GetById(id);
+            var selected = await _product.GetById(id);
             var list = Categories();
             ViewBag.Categories = new SelectList(list);
             return View(selected);
@@ -207,63 +190,26 @@ namespace ShredStore.Controllers
             {
                 try
                 {
-                    ProductViewModel newProduct = new ProductViewModel();
-                    newProduct.Id = edited.Id;
-                    newProduct.Name = edited.Name;
-                    newProduct.Brand = edited.Brand;
-                    newProduct.Description = edited.Description;
-                    newProduct.Category = edited.Category;
-                    newProduct.UserId = edited.UserId;
-                    newProduct.Price = edited.Price; 
-                    if(edited.ImageFile != null)
-                    {
-                        string res = DeleteImage(edited.ImageName);
-                        newProduct.ImageName = await UploadImage(edited.ImageFile);
-                        newProduct.ImageFile = edited.ImageFile;
-                    }
-                    newProduct.ImageName = edited.ImageName;
-                    await product.Edit(newProduct);
+                    ProductViewModel newProduct = await _productFactory.createProduct(edited);
+                    await _product.Edit(newProduct);
                     return RedirectToAction(nameof(Index));                    
                 }
                 catch(Exception ex)
                 {
-                    utilityClass.GetLog().Error(ex, "Exception caught at EditProduct action in ShredStoreController.");
+                    _utilityClass.GetLog().Error(ex, "Exception caught at EditProduct action in ShredStoreController.");
                     return View();
                 }
             }
 
             return RedirectToAction(nameof(EditProduct), edited.Id);
         }
-        public string DeleteImage(string image)
-        {
-            string rootPath = hostEnvironment.WebRootPath;
-            string path = Path.Combine(rootPath + "/Images/", image);
-            FileInfo file = new FileInfo(path);
-            if (file.Exists)
-            {
-                try
-                {
-                    file.Delete();
-                    return "Ok";
-                }
-                catch (Exception ex)
-                {
-                    utilityClass.GetLog().Error(ex, "Exception caught at DeleteImage action in ShredStoreController.");
-                    return "Error";
-                }
-                
-            }
-            else
-            {
-                return "Error";
-            }
-        }
+       
 
         // GET: ShredStoreController/Delete/5
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var selected = await product.GetById(id);
+            var selected = await _product.GetById(id);
             return View(selected);
         }
 
@@ -276,11 +222,11 @@ namespace ShredStore.Controllers
             try
             {
 
-                var selected = await product.GetById(id);
-                string result = DeleteImage(selected.ImageName);
+                var selected = await _product.GetById(id);
+                string result = _utilityClass.DeleteImage(selected.ImageName);
                 if(result == "Ok")
                 {
-                    await product.Delete(selected.Id);
+                    await _product.Delete(selected.Id);
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -292,7 +238,7 @@ namespace ShredStore.Controllers
             }
             catch(Exception ex)
             {
-                utilityClass.GetLog().Error(ex, "Exception caught at DeleteProduct action in ShredStoreController.");
+                _utilityClass.GetLog().Error(ex, "Exception caught at DeleteProduct action in ShredStoreController.");
                 return View();
             }
         }
