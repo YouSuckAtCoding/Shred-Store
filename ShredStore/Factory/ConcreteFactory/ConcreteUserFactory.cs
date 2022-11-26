@@ -6,11 +6,10 @@ namespace ShredStore.Factory.ConcreteFactory
 {
     public class ConcreteUserFactory : IUserFactory
     {
-        private readonly ListCorrector _listCorrector;
+        
         private readonly MiscellaneousUtilityClass _utilityClass;
-        public ConcreteUserFactory(ListCorrector _listCorrector, MiscellaneousUtilityClass utilityClass)
+        public ConcreteUserFactory(MiscellaneousUtilityClass utilityClass)
         {
-            this._listCorrector = _listCorrector;
             _utilityClass = utilityClass;
         }
         public UserRegistrationViewModel CreateUser(UserRegistrationViewModel user)
@@ -18,7 +17,7 @@ namespace ShredStore.Factory.ConcreteFactory
             UserRegistrationViewModel newUser = new UserRegistrationViewModel();
             newUser.Name = user.Name;
 
-            if (_listCorrector.IsEmailValid(user.Email))
+            if (_utilityClass.IsEmailValid(user.Email))
             {
                 newUser.Email = user.Email;
             }
@@ -44,7 +43,7 @@ namespace ShredStore.Factory.ConcreteFactory
             UserViewModel newUser = new UserViewModel();
             newUser.Id = user.Id;
             newUser.Name = user.Name;
-            if (_listCorrector.IsEmailValid(user.Email))
+            if (_utilityClass.IsEmailValid(user.Email))
             {
                 newUser.Email = user.Email;
             }

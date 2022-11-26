@@ -28,7 +28,9 @@ namespace ShredStore.StartUp
             services.AddTransient<ICartItemHttpService, CartItemHttpService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IProductFactory, ConcreteProductFactory>();
-            services.AddSingleton<ListCorrector>();
+            services.AddSingleton<IUserFactory, ConcreteUserFactory>();
+            services.AddSingleton<ICartFactory, ConcreteCartFactory>();
+            services.AddSingleton<ICartItemFactory, ConcreteCartItemFactory>();
             services.AddSingleton<EmailSender>();
             services.AddSingleton<MiscellaneousUtilityClass>();
             

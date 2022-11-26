@@ -11,21 +11,19 @@ namespace ShredStore.Controllers
     {
         private readonly IUserHttpService _user;
         private readonly IProductHttpService _product;
-        private readonly ListCorrector _listCorrector;
         private readonly EmailSender _emailSender;
         private readonly MiscellaneousUtilityClass _utilityClass;
         private readonly IUserFactory _userFactory;
         public const string SessionKeyName = "_Name";
         public const string SessionKeyId = "_Id";
         public const string SessionKeyRole = "_Role";
-        public UserOperationsController(IUserHttpService _user, IProductHttpService _product, ListCorrector _listCorrector,
-            EmailSender _emailSender, MiscellaneousUtilityClass utilityClass, IUserFactory _userFactory)
+        public UserOperationsController(IUserHttpService _user, IProductHttpService _product,
+            EmailSender _emailSender, MiscellaneousUtilityClass _utilityClass, IUserFactory _userFactory)
         {
             this._user = _user;
             this._product = _product;
-            this._listCorrector = _listCorrector;
             this._emailSender = _emailSender;
-            this._utilityClass = utilityClass;
+            this._utilityClass = _utilityClass;
             this._userFactory = _userFactory;
             
         }
@@ -92,7 +90,7 @@ namespace ShredStore.Controllers
                         return View();
                     }
                     await _user.Edit(editedUser);
-                    return RedirectToAction("ResetInfo", "ShredStore", editedUser);
+                    return RedirectToAction("SetSessionInfo", "ShredStore", editedUser);
                 }
                 catch (Exception ex)
                 {
@@ -104,17 +102,15 @@ namespace ShredStore.Controllers
             }
             return View();
         }
-
         [HttpGet]
         public async Task<IActionResult> PasswordReset()
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> PasswordReset(string Email)
         {
-            if (_listCorrector.IsEmailValid(Email))
+            if (_utilityClass.IsEmailValid(Email))
             {
                 bool res = await _user.CheckEmail(Email);
                 if (res)
@@ -154,7 +150,6 @@ namespace ShredStore.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> ChangePassword(UserLoginViewModel userLogin)
         {
@@ -192,7 +187,6 @@ namespace ShredStore.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> NewPassword(UserResetPasswordViewModel newPassword)
         {
@@ -214,11 +208,7 @@ namespace ShredStore.Controllers
                 ViewBag.Message = "An error has occurred.";
                 _utilityClass.GetLog().Error(ex, "Exception caught at NewPassword action in UserOperationsController.");
                 return View();
-            }
-            
-               
-                
-            
+            }       
         }
         [HttpGet]
         public async Task<IActionResult> DeleteAccount()
@@ -268,7 +258,6 @@ namespace ShredStore.Controllers
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(UserLoginViewModel userLogin)
@@ -278,20 +267,9 @@ namespace ShredStore.Controllers
                 try
                 {
                     var loggedUser = await _user.Login(userLogin);
-                    if (loggedUser != null)
+                    if (loggedUser != null && loggedUser.Id != 0)
                     {
-                        if (loggedUser.Id != 0)
-                        {
-                            HttpContext.Session.SetString(SessionKeyName, loggedUser.Name);
-                            HttpContext.Session.SetInt32(SessionKeyId, loggedUser.Id);
-                            HttpContext.Session.SetString(SessionKeyRole, loggedUser.Role);
-                            return RedirectToAction(nameof(Index), "ShredStore");
-                        }
-                        else
-                        {
-                            ViewBag.Message = "User does not exists!";
-                            return View();
-                        }
+                        SetSessionInfo(loggedUser);
                     }
                     else
                     {
@@ -304,13 +282,9 @@ namespace ShredStore.Controllers
                     ViewBag.Message = "An error has occurred.";
                     _utilityClass.GetLog().Error(ex, "Exception caught at Login action in UserOperationsController.");
                     return View();
-                }
-                
-                
-
+                }        
             }
             return View();
-
         }
         public ActionResult Logout()
         {
@@ -319,8 +293,9 @@ namespace ShredStore.Controllers
             HttpContext.Session.SetString(SessionKeyRole, "");
             return RedirectToAction(nameof(Index), "ShredStore");
         }
-        public ActionResult ResetInfo(UserViewModel user)
+        public ActionResult SetSessionInfo(UserViewModel user)
         {
+            HttpContext.Session.SetInt32(SessionKeyId, user.Id);
             HttpContext.Session.SetString(SessionKeyName, user.Name);
             HttpContext.Session.SetString(SessionKeyRole, user.Role);
             return (RedirectToAction(nameof(Index),"ShredStore"));
